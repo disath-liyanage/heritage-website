@@ -1,6 +1,5 @@
 
 import type { Metadata } from "next";
-import { DefaultSeo } from "next-seo";
 import "./globals.css";
 import { cormorant, dmSans } from "./fonts";
 
@@ -28,16 +27,6 @@ export default function RootLayout({
       className={`${cormorant.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-body">
-        <DefaultSeo
-          title="Heritage Family Restaurant | The Magical Tree House by Heritage Family Resturent"
-          description="Heritage Family Restaurant with family dining and The Magical Tree House by Heritage Family Resturent."
-          openGraph={{
-            title:
-              "Heritage Family Restaurant | The Magical Tree House by Heritage Family Resturent",
-            description:
-              "Heritage Family Restaurant with family dining and The Magical Tree House by Heritage Family Resturent.",
-          }}
-        />
         {children}
       </body>
     </html>

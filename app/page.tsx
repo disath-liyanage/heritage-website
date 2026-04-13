@@ -1,48 +1,63 @@
-export default function Page() {
-  return <main>Home page placeholder</main>;
+import fs from "node:fs";
+import path from "node:path";
+import Footer from "@/components/Footer";
+import Hero from "@/components/Hero";
+import MapSection from "@/components/MapSection";
+import Navbar from "@/components/Navbar";
+import PhotoCarousel from "@/components/PhotoCarousel";
+import Reviews from "@/components/Reviews";
+import TreeHouseSection from "@/components/TreeHouseSection";
+import getReviews from "@/lib/getReviews";
+
+const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
+
+function getAllImageFiles(dir: string, relative = ""): string[] {
+  const entries = fs.readdirSync(path.join(dir, relative), { withFileTypes: true });
+  const collected: string[] = [];
+
+  for (const entry of entries) {
+    if (entry.name === ".DS_Store") {
+      continue;
+    }
+
+    const relativePath = path.join(relative, entry.name);
+    if (entry.isDirectory()) {
+      collected.push(...getAllImageFiles(dir, relativePath));
+      continue;
+    }
+
+    const ext = path.extname(entry.name).toLowerCase();
+    if (IMAGE_EXTENSIONS.has(ext) && entry.name.toLowerCase() !== "logo.jpeg") {
+      const srcPath = `/${path.join("images", relativePath).split(path.sep).join("/")}`;
+      collected.push(encodeURI(srcPath));
+    }
+  }
+
+  return collected;
 }
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+export default async function Page() {
+  const imageRoot = path.join(process.cwd(), "public", "images");
+  const discoveredImages = fs.existsSync(imageRoot) ? getAllImageFiles(imageRoot) : [];
+
+  const images = discoveredImages.length ? discoveredImages : ["/images/outdoor/river.jpeg"];
+  const heroImage = images[0];
+  const treeHouseImage = images[1] ?? images[0];
+  const reviewData = await getReviews();
+
+  return (
+    <main className="bg-[#F5F0E8] text-[#1F2A20]">
+      <Navbar />
+      <Hero imageSrc={heroImage} />
+      <PhotoCarousel images={images} />
+      <TreeHouseSection imageSrc={treeHouseImage} />
+      <Reviews
+        reviews={reviewData.reviews}
+        overallRating={reviewData.overallRating}
+        reviewCount={reviewData.totalRatings}
+      />
+      <MapSection />
+      <Footer />
+    </main>
   );
 }
