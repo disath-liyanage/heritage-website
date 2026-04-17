@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import MapSection from "@/components/MapSection";
 import Navbar from "@/components/Navbar";
+
+export const metadata: Metadata = {
+  title: "Reserve a Table | Heritage Family Restaurant, Yatiyanthota",
+  description:
+    "Book a table at Heritage Family Restaurant or reserve The Magical Tree House. Located in Thunkinda, Yatiyanthota, beside the Kelani River. Call +94 71 693 9224.",
+  alternates: {
+    canonical: "https://www.heritagefamilyrest.com/contact",
+  },
+};
 
 export default function ContactPage() {
   return (

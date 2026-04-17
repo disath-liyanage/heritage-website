@@ -9,7 +9,7 @@ export default function Hero({ imageSrc }: HeroProps) {
     <section className="relative flex h-screen items-center justify-center overflow-hidden" aria-label="Hero section">
       <Image
         src={imageSrc}
-        alt="Heritage Family Restaurant by the river"
+        alt="Heritage Family Restaurant riverside view, Yatiyanthota"
         fill
         priority
         className="object-cover"
@@ -21,14 +21,11 @@ export default function Hero({ imageSrc }: HeroProps) {
           Thunkinda, Yatiyanthota · Kelani River
         </p>
         <h1 className="font-display text-5xl leading-tight italic md:text-7xl">
-          Where the forest meets the river
-        </h1>
-        <p className="mt-4 text-xs uppercase tracking-[0.45em] md:text-sm">
           Heritage Family Restaurant
-        </p>
+        </h1>
+        <p className="mt-4 text-xs uppercase tracking-[0.45em] md:text-sm">Where the forest meets the river</p>
         <p className="mx-auto mt-6 max-w-2xl text-sm text-[#F5F0E8]/90 md:text-lg">
-          A riverside dining experience with lunch, dinner and our magical treehouse
-          - nestled in nature by the Kelani River.
+          Heritage Family Restaurant offers a riverside dining experience with lunch, dinner, and The Magical Tree House - nestled in nature by the Kelani River.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">

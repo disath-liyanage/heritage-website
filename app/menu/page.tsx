@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import MenuPhotoExplorer from "@/components/MenuPhotoExplorer";
 import Navbar from "@/components/Navbar";
 import getDiscoveredImages from "@/lib/getImageFiles";
 import menuData from "@/lib/menuData";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Menu | Sri Lankan Cuisine — Heritage Family Restaurant, Yatiyanthota",
+  description:
+    "Explore the menu at Heritage Family Restaurant. Authentic Sri Lankan food served riverside in Yatiyanthota, near Kithulgala.",
+  alternates: {
+    canonical: "https://www.heritagefamilyrest.com/menu",
+  },
+};
 
 const currency = new Intl.NumberFormat("en-LK", {
   style: "currency",

@@ -8,6 +8,16 @@ type MenuPhotoExplorerProps = {
   images: string[];
 };
 
+function getMenuImageAlt(src: string) {
+  const path = src.toLowerCase();
+
+  if (path.includes("/images/food/") || path.includes("/images/menu/")) {
+    return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
+  }
+
+  return "Heritage Family Restaurant riverside view, Yatiyanthota";
+}
+
 export default function MenuPhotoExplorer({ images }: MenuPhotoExplorerProps) {
   const router = useRouter();
   const menuImages = useMemo(() => {
@@ -82,7 +92,7 @@ export default function MenuPhotoExplorer({ images }: MenuPhotoExplorerProps) {
             >
               <Image
                 src={src}
-                alt="Menu page photo"
+                alt={getMenuImageAlt(src)}
                 fill
                 className="object-cover transition duration-500 group-hover:scale-105"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"

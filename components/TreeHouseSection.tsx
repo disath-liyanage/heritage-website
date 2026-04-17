@@ -18,8 +18,9 @@ export default function TreeHouseSection({ imageSrc }: TreeHouseSectionProps) {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-2">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-[#6A5A43]">Our signature experience</p>
-          <h2 className="mt-4 font-display text-4xl text-[#1C2B1E] md:text-5xl">The Magical Tree House</h2>
-          <p className="mt-2 font-display text-2xl italic text-[#35513A]">by Heritage Family Restaurant</p>
+          <h2 className="mt-4 font-display text-4xl text-[#1C2B1E] md:text-5xl">
+            The Magical Tree House by Heritage Family Restaurant
+          </h2>
           <p className="mt-6 max-w-xl text-[#3E493E]">
             Perched above the Kelani River in the lush forests of Yatiyanthota, The Magical Tree House offers a one-of-a-kind dining experience. Perfect for families, couples, and nature lovers - reserve your table in the treetops today.
           </p>
@@ -48,7 +49,7 @@ export default function TreeHouseSection({ imageSrc }: TreeHouseSectionProps) {
         <div className="relative h-105 overflow-hidden rounded-lg shadow-lg">
           <Image
             src={imageSrc}
-            alt="The Magical Tree House by Heritage Family Restaurant"
+            alt="The Magical Tree House by Heritage Family Restaurant, Yatiyanthota"
             fill
             className="object-cover"
             sizes="(min-width: 1024px) 50vw, 100vw"

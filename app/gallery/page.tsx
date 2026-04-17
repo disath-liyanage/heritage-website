@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import GalleryPhotoExplorer from "@/components/GalleryPhotoExplorer";
 import Navbar from "@/components/Navbar";
 import getDiscoveredImages from "@/lib/getImageFiles";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Gallery | Heritage Family Restaurant & The Magical Tree House",
+  description:
+    "Browse photos of Heritage Family Restaurant and The Magical Tree House — riverside dining, treetop views, and Sri Lankan cuisine in Yatiyanthota.",
+  alternates: {
+    canonical: "https://www.heritagefamilyrest.com/gallery",
+  },
+};
 
 export default function GalleryPage() {
   const images = getDiscoveredImages();

@@ -11,6 +11,24 @@ type PhotoLightboxProps = {
   onNext: () => void;
 };
 
+function getLightboxImageAlt(src: string) {
+  const path = src.toLowerCase();
+
+  if (path.includes("/images/treehouse/")) {
+    return "The Magical Tree House by Heritage Family Restaurant, Yatiyanthota";
+  }
+
+  if (path.includes("/images/outdoor/") || path.includes("river")) {
+    return "Kelani River view at Heritage Family Restaurant, Yatiyanthota";
+  }
+
+  if (path.includes("/images/food/") || path.includes("/images/menu/")) {
+    return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
+  }
+
+  return "Heritage Family Restaurant riverside view, Yatiyanthota";
+}
+
 export default function PhotoLightbox({
   images,
   selectedIndex,
@@ -92,7 +110,7 @@ export default function PhotoLightbox({
           >
             <Image
               src={currentSrc}
-              alt="Selected photo"
+              alt={getLightboxImageAlt(currentSrc)}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 1200px"

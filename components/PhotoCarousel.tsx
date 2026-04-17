@@ -8,6 +8,24 @@ type PhotoCarouselProps = {
   images: string[];
 };
 
+function getImageAlt(src: string) {
+  const path = src.toLowerCase();
+
+  if (path.includes("/images/treehouse/")) {
+    return "The Magical Tree House by Heritage Family Restaurant, Yatiyanthota";
+  }
+
+  if (path.includes("/images/outdoor/") || path.includes("river")) {
+    return "Kelani River view at Heritage Family Restaurant, Yatiyanthota";
+  }
+
+  if (path.includes("/images/food/") || path.includes("/images/menu/")) {
+    return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
+  }
+
+  return "Heritage Family Restaurant riverside view, Yatiyanthota";
+}
+
 export default function PhotoCarousel({ images }: PhotoCarouselProps) {
   const [paused, setPaused] = useState(false);
   const loopImages = useMemo(() => [...images, ...images], [images]);
@@ -31,11 +49,11 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
             <Link
               key={`${src}-${index}`}
               href={`/gallery?photo=${encodeURIComponent(src)}`}
-              className="relative h-[210px] w-[300px] shrink-0 overflow-hidden rounded-lg"
+              className="relative h-52.5 w-75 shrink-0 overflow-hidden rounded-lg"
             >
               <Image
                 src={src}
-                alt="Heritage Family Restaurant gallery"
+                alt={getImageAlt(src)}
                 fill
                 className="object-cover"
                 sizes="300px"
