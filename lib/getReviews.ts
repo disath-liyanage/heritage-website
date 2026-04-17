@@ -51,8 +51,8 @@ const fallbackReviews: GoogleReview[] = [
 ];
 
 export default async function getReviews(): Promise<ReviewsPayload> {
-  const placeId = process.env.NEXT_PUBLIC_GOOGLE_PLACE_ID;
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const placeId = process.env.GOOGLE_PLACE_ID ?? process.env.NEXT_PUBLIC_GOOGLE_PLACE_ID;
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY ?? process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   if (!placeId || !apiKey) {
     return {

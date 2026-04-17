@@ -5,9 +5,10 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 const center = { lat: 6.9271, lng: 80.3849 };
 
 export default function MapSection() {
+  const mapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
   const { isLoaded } = useJsApiLoader({
     id: "heritage-map",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
+    googleMapsApiKey: mapsApiKey,
   });
 
   return (
@@ -19,7 +20,11 @@ export default function MapSection() {
         </p>
 
         <div className="mt-8 overflow-hidden rounded-lg border border-[#DDCFB9] bg-[#EDE5D8]">
-          {isLoaded ? (
+          {!mapsApiKey ? (
+            <div className="flex h-[450px] items-center justify-center text-center text-[#5A674F]">
+              Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in deployment settings to load the map.
+            </div>
+          ) : isLoaded ? (
             <GoogleMap
               mapContainerStyle={{ width: "100%", height: "450px" }}
               center={center}
