@@ -41,7 +41,8 @@ export default async function Page() {
   const discoveredImages = fs.existsSync(imageRoot) ? getAllImageFiles(imageRoot) : [];
 
   const images = discoveredImages.length ? discoveredImages : ["/images/outdoor/river.jpeg"];
-  const heroImage = images[0];
+  const preferredHeroImage = "/images/outdoor/Front.jpeg";
+  const heroImage = images.includes(preferredHeroImage) ? preferredHeroImage : images[0];
   const treeHouseImage = images[1] ?? images[0];
   const reviewData = await getReviews();
 

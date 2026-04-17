@@ -46,7 +46,7 @@ export default function MapSection() {
           </article>
           <article className="rounded-lg border border-[#DDCFB9] bg-white p-5">
             <h3 className="text-sm uppercase tracking-[0.2em] text-[#8A7A61]">Phone</h3>
-            <p className="mt-2 text-[#2D3F2B]">+94 XX XXX XXXX</p>
+            <p className="mt-2 text-[#2D3F2B]">+94 71 693 9224</p>
           </article>
           <article className="rounded-lg border border-[#DDCFB9] bg-white p-5">
             <h3 className="text-sm uppercase tracking-[0.2em] text-[#8A7A61]">Hours</h3>
