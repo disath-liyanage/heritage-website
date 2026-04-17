@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Footer from "@/components/Footer";
+import GalleryPhotoExplorer from "@/components/GalleryPhotoExplorer";
 import Navbar from "@/components/Navbar";
 import getDiscoveredImages from "@/lib/getImageFiles";
 
@@ -18,19 +18,7 @@ export default function GalleryPage() {
         </p>
       </section>
 
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-6 pb-20 sm:grid-cols-2 lg:grid-cols-3">
-        {images.map((src) => (
-          <article key={src} className="group relative aspect-[4/3] overflow-hidden rounded-xl">
-            <Image
-              src={src}
-              alt="Heritage Family Restaurant gallery photo"
-              fill
-              className="object-cover transition duration-500 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          </article>
-        ))}
-      </section>
+      <GalleryPhotoExplorer images={images} />
 
       <Footer />
     </main>

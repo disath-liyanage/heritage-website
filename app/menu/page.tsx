@@ -1,5 +1,7 @@
 import Footer from "@/components/Footer";
+import MenuPhotoExplorer from "@/components/MenuPhotoExplorer";
 import Navbar from "@/components/Navbar";
+import getDiscoveredImages from "@/lib/getImageFiles";
 import menuData from "@/lib/menuData";
 
 const currency = new Intl.NumberFormat("en-LK", {
@@ -9,6 +11,8 @@ const currency = new Intl.NumberFormat("en-LK", {
 });
 
 export default function MenuPage() {
+  const images = getDiscoveredImages();
+
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
       <Navbar />
@@ -45,6 +49,8 @@ export default function MenuPage() {
           </article>
         ))}
       </section>
+
+      <MenuPhotoExplorer images={images} />
 
       <Footer />
     </main>

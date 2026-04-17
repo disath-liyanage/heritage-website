@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const links = [
@@ -12,8 +13,10 @@ const links = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const useLightNavbar = pathname !== "/" || isScrolled;
 
   useEffect(() => {
     const onScroll = () => {
@@ -28,7 +31,7 @@ export default function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        isScrolled
+        useLightNavbar
           ? "border-b border-[#D8CCB8] bg-[#F5F0E8]/95 backdrop-blur"
           : "bg-transparent"
       }`}
@@ -54,7 +57,7 @@ export default function Navbar() {
               key={link.label}
               href={link.href}
               className={`text-sm font-medium transition-colors ${
-                isScrolled
+                useLightNavbar
                   ? "text-[#2D3F2B] hover:text-[#1C2B1E]"
                   : "text-[#F5F0E8] hover:text-[#E7DBC7]"
               }`}
@@ -65,7 +68,7 @@ export default function Navbar() {
           <Link
             href="/contact"
             className={`rounded-full border px-5 py-2 text-sm font-semibold transition-colors ${
-              isScrolled
+              useLightNavbar
                 ? "border-[#2D3F2B] text-[#2D3F2B] hover:bg-[#2D3F2B] hover:text-[#F5F0E8]"
                 : "border-[#F5F0E8] text-[#F5F0E8] hover:bg-[#F5F0E8] hover:text-[#1C2B1E]"
             }`}
@@ -77,7 +80,7 @@ export default function Navbar() {
         <button
           type="button"
           className={`inline-flex h-10 w-10 items-center justify-center rounded md:hidden ${
-            isScrolled ? "text-[#1C2B1E]" : "text-[#F5F0E8]"
+            useLightNavbar ? "text-[#1C2B1E]" : "text-[#F5F0E8]"
           }`}
           onClick={() => setIsOpen((prev) => !prev)}
           aria-expanded={isOpen}

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type PhotoCarouselProps = {
@@ -27,8 +28,9 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
       <div className="overflow-hidden" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
         <div className={`carousel-track flex w-max gap-4 px-6 ${paused ? "paused" : ""}`}>
           {loopImages.map((src, index) => (
-            <article
+            <Link
               key={`${src}-${index}`}
+              href={`/gallery?photo=${encodeURIComponent(src)}`}
               className="relative h-[210px] w-[300px] shrink-0 overflow-hidden rounded-lg"
             >
               <Image
@@ -38,7 +40,7 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
                 className="object-cover"
                 sizes="300px"
               />
-            </article>
+            </Link>
           ))}
         </div>
       </div>
