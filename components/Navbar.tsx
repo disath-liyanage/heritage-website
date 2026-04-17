@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const links = [
-  { href: "#gallery", label: "Menu" },
-  { href: "#treehouse", label: "Tree House" },
-  { href: "#gallery", label: "Gallery" },
-  { href: "#location", label: "Contact" },
+  { href: "/menu", label: "Menu" },
+  { href: "/treehouse", label: "Tree House" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {
@@ -37,7 +37,7 @@ export default function Navbar() {
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3"
         aria-label="Main navigation"
       >
-        <Link href="#" aria-label="Heritage Family Restaurant home">
+        <Link href="/" aria-label="Heritage Family Restaurant home">
           <Image
             src="/images/logo.jpeg"
             alt="Heritage Family Restaurant logo"
@@ -50,7 +50,7 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-8 md:flex">
           {links.map((link) => (
-            <a
+            <Link
               key={link.label}
               href={link.href}
               className={`text-sm font-medium transition-colors ${
@@ -60,10 +60,10 @@ export default function Navbar() {
               }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
             className={`rounded-full border px-5 py-2 text-sm font-semibold transition-colors ${
               isScrolled
                 ? "border-[#2D3F2B] text-[#2D3F2B] hover:bg-[#2D3F2B] hover:text-[#F5F0E8]"
@@ -71,7 +71,7 @@ export default function Navbar() {
             }`}
           >
             Reserve a table
-          </a>
+          </Link>
         </div>
 
         <button
@@ -99,23 +99,23 @@ export default function Navbar() {
           <ul className="flex flex-col gap-3">
             {links.map((link) => (
               <li key={link.label}>
-                <a
+                <Link
                   href={link.href}
                   className="block py-1 text-[#2D3F2B]"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
             <li>
-              <a
-                href="#contact"
+              <Link
+                href="/contact"
                 className="mt-2 inline-flex rounded-full border border-[#2D3F2B] px-5 py-2 text-sm font-semibold text-[#2D3F2B]"
                 onClick={() => setIsOpen(false)}
               >
                 Reserve a table
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

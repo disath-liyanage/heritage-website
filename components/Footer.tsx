@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { SiAirbnb, SiBookingdotcom, SiTripadvisor } from "react-icons/si";
 
@@ -69,11 +70,11 @@ export default function Footer() {
         <section>
           <h3 className="font-display text-2xl">Quick links</h3>
           <ul className="mt-4 space-y-2 text-[#F5F0E8]/60">
-            <li><a href="#gallery">Menu</a></li>
-            <li><a href="#treehouse">The Magical Tree House</a></li>
-            <li><a href="#gallery">Gallery</a></li>
-            <li><a href="#contact">Reservations</a></li>
-            <li><a href="#location">Contact</a></li>
+            <li><Link href="/menu">Menu</Link></li>
+            <li><Link href="/treehouse">The Magical Tree House</Link></li>
+            <li><Link href="/gallery">Gallery</Link></li>
+            <li><Link href="/contact">Reservations</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </section>
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type TreeHouseSectionProps = {
   imageSrc: string;
@@ -36,12 +37,12 @@ export default function TreeHouseSection({ imageSrc }: TreeHouseSectionProps) {
             ))}
           </ul>
 
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
             className="mt-8 inline-flex rounded-full bg-[#2E4830] px-7 py-3 text-sm font-semibold text-[#F5F0E8] transition hover:bg-[#1C2B1E]"
           >
             Reserve the Tree House
-          </a>
+          </Link>
         </div>
 
         <div className="relative h-105 overflow-hidden rounded-lg shadow-lg">
