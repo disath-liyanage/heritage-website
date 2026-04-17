@@ -3,8 +3,18 @@ import GalleryPhotoExplorer from "@/components/GalleryPhotoExplorer";
 import Navbar from "@/components/Navbar";
 import getDiscoveredImages from "@/lib/getImageFiles";
 
+export const dynamic = "force-dynamic";
+
 export default function GalleryPage() {
-  const images = getDiscoveredImages();
+  let images: string[] = [];
+
+  try {
+    images = getDiscoveredImages();
+  } catch {
+    images = [];
+  }
+
+  const safeImages = Array.isArray(images) ? images : [];
 
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
@@ -18,7 +28,7 @@ export default function GalleryPage() {
         </p>
       </section>
 
-      <GalleryPhotoExplorer images={images} />
+      <GalleryPhotoExplorer images={safeImages} />
 
       <Footer />
     </main>
