@@ -41,12 +41,16 @@ export default function PhotoLightbox({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#F5F0E8]/35 backdrop-blur-[2px] lightbox-fade-in">
-      <div className="absolute left-4 top-4 z-10">
+    <div
+      className="fixed inset-0 z-100 bg-[#F5F0E8]/35 backdrop-blur-[2px] lightbox-fade-in"
+      onClick={onBack}
+      aria-label="Close lightbox backdrop"
+    >
+      <div className="absolute left-4 top-4 z-10" onClick={(event) => event.stopPropagation()}>
         <button
           type="button"
           onClick={onBack}
-          className="rounded-full border border-[#1F2A20]/25 bg-[#F5F0E8]/80 px-4 py-2 text-sm font-semibold text-[#1F2A20] hover:bg-[#F5F0E8]"
+          className="rounded-full border border-[#1F2A20]/25 bg-[#F5F0E8]/85 px-4 py-2 text-sm font-semibold text-[#1F2A20] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#1F2A20]/45 hover:bg-[#F5F0E8] hover:font-bold hover:shadow-lg"
         >
           Back
         </button>
@@ -54,9 +58,12 @@ export default function PhotoLightbox({
 
       <button
         type="button"
-        onClick={onPrev}
+        onClick={(event) => {
+          event.stopPropagation();
+          onPrev();
+        }}
         aria-label="Previous photo"
-        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-[#1F2A20]/25 bg-[#F5F0E8]/80 p-3 text-[#1F2A20] hover:bg-[#F5F0E8] md:left-6"
+        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-[#1F2A20]/25 bg-[#F5F0E8]/85 p-3 text-[#1F2A20] transition-all duration-200 hover:scale-105 hover:border-[#1F2A20]/45 hover:bg-[#F5F0E8] hover:shadow-xl md:left-6"
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M15 18l-6-6 6-6" />
@@ -65,9 +72,12 @@ export default function PhotoLightbox({
 
       <button
         type="button"
-        onClick={onNext}
+        onClick={(event) => {
+          event.stopPropagation();
+          onNext();
+        }}
         aria-label="Next photo"
-        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-[#1F2A20]/25 bg-[#F5F0E8]/80 p-3 text-[#1F2A20] hover:bg-[#F5F0E8] md:right-6"
+        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-[#1F2A20]/25 bg-[#F5F0E8]/85 p-3 text-[#1F2A20] transition-all duration-200 hover:scale-105 hover:border-[#1F2A20]/45 hover:bg-[#F5F0E8] hover:shadow-xl md:right-6"
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M9 18l6-6-6-6" />
@@ -76,7 +86,10 @@ export default function PhotoLightbox({
 
       <div className="relative h-full w-full p-6 pt-20 md:p-12 md:pt-20">
         <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-center">
-          <div className="lightbox-photo-in relative aspect-[4/3] w-full max-w-5xl overflow-hidden rounded-3xl border border-[#1F2A20]/10">
+          <div
+            className="lightbox-photo-in relative aspect-4/3 w-full max-w-5xl overflow-hidden rounded-3xl border border-[#1F2A20]/10"
+            onClick={(event) => event.stopPropagation()}
+          >
             <Image
               src={currentSrc}
               alt="Selected photo"

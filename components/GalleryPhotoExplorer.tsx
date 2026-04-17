@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import PhotoLightbox from "@/components/PhotoLightbox";
 
 type GalleryPhotoExplorerProps = {
@@ -16,25 +16,64 @@ export default function GalleryPhotoExplorer({ images }: GalleryPhotoExplorerPro
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeFilter, setActiveFilter] = useState<GalleryFilter>("all");
+  const [sessionOrderedImages, setSessionOrderedImages] = useState<string[]>(images);
+
+  useEffect(() => {
+    if (!images.length) {
+      setSessionOrderedImages([]);
+      return;
+    }
+
+    const storageKey = "heritage:gallery-order:v1";
+
+    try {
+      const stored = sessionStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          const seen = new Set(images);
+          const persisted = parsed.filter((src): src is string => typeof src === "string" && seen.has(src));
+          const missing = images.filter((src) => !persisted.includes(src));
+          const merged = [...persisted, ...missing];
+
+          if (merged.length === images.length) {
+            setSessionOrderedImages(merged);
+            return;
+          }
+        }
+      }
+
+      const shuffled = [...images];
+      for (let i = shuffled.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      sessionStorage.setItem(storageKey, JSON.stringify(shuffled));
+      setSessionOrderedImages(shuffled);
+    } catch {
+      setSessionOrderedImages(images);
+    }
+  }, [images]);
 
   const filteredImages = useMemo(() => {
     if (activeFilter === "outdoor") {
-      return images.filter((src) => src.toLowerCase().includes("/images/outdoor/"));
+      return sessionOrderedImages.filter((src) => src.toLowerCase().includes("/images/outdoor/"));
     }
 
     if (activeFilter === "treehouse") {
-      return images.filter((src) => src.toLowerCase().includes("/images/treehouse/"));
+      return sessionOrderedImages.filter((src) => src.toLowerCase().includes("/images/treehouse/"));
     }
 
     if (activeFilter === "cuisine") {
-      return images.filter((src) => {
+      return sessionOrderedImages.filter((src) => {
         const path = src.toLowerCase();
         return path.includes("/images/food/") || path.includes("/images/menu/");
       });
     }
 
-    return images;
-  }, [activeFilter, images]);
+    return sessionOrderedImages;
+  }, [activeFilter, sessionOrderedImages]);
 
   const selectedPhoto = searchParams.get("photo");
   const selectedIndex = selectedPhoto ? filteredImages.indexOf(selectedPhoto) : -1;
@@ -123,8 +162,12 @@ export default function GalleryPhotoExplorer({ images }: GalleryPhotoExplorerPro
           <button
             type="button"
             onClick={() => setFilter("all")}
-            className="rounded-full border border-[#CBBDA7] bg-[#FFF9F0] px-5 py-2 text-sm font-semibold text-[#2D3F2B] transition hover:border-[#2D3F2B]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#CBBDA7] bg-[#FFF9F0] px-5 py-2 text-sm font-semibold text-[#2D3F2B] transition hover:border-[#2D3F2B]"
           >
+            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M5 5l10 10" />
+              <path d="M15 5L5 15" />
+            </svg>
             Clear
           </button>
         ) : null}
@@ -136,7 +179,8 @@ export default function GalleryPhotoExplorer({ images }: GalleryPhotoExplorerPro
             key={src}
             type="button"
             onClick={() => openPhoto(index)}
-            className="group relative aspect-[4/3] overflow-hidden rounded-xl text-left"
+            aria-label={`Open photo ${index + 1}`}
+            className="group relative aspect-4/3 overflow-hidden rounded-xl text-left"
           >
             <Image
               src={src}
