@@ -3,6 +3,7 @@ import MenuPhotoExplorer from "@/components/MenuPhotoExplorer";
 import Navbar from "@/components/Navbar";
 import getDiscoveredImages from "@/lib/getImageFiles";
 import menuData from "@/lib/menuData";
+import { Suspense } from "react";
 
 const currency = new Intl.NumberFormat("en-LK", {
   style: "currency",
@@ -12,6 +13,7 @@ const currency = new Intl.NumberFormat("en-LK", {
 
 export default function MenuPage() {
   const images = getDiscoveredImages();
+  const safeImages = Array.isArray(images) ? images : [];
 
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
@@ -50,7 +52,9 @@ export default function MenuPage() {
         ))}
       </section>
 
-      <MenuPhotoExplorer images={images} />
+      <Suspense fallback={<section className="mx-auto max-w-7xl px-6 pb-20 text-[#2A3A2D]/75">Loading photos...</section>}>
+        <MenuPhotoExplorer images={safeImages} />
+      </Suspense>
 
       <Footer />
     </main>

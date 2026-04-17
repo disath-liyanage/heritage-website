@@ -2,19 +2,10 @@ import Footer from "@/components/Footer";
 import GalleryPhotoExplorer from "@/components/GalleryPhotoExplorer";
 import Navbar from "@/components/Navbar";
 import getDiscoveredImages from "@/lib/getImageFiles";
-
-export const dynamic = "force-dynamic";
+import { Suspense } from "react";
 
 export default function GalleryPage() {
-  let images: string[] = [];
-
-  try {
-    images = getDiscoveredImages();
-  } catch {
-    images = [];
-  }
-
-  const safeImages = Array.isArray(images) ? images : [];
+  const images = getDiscoveredImages();
 
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
@@ -28,7 +19,9 @@ export default function GalleryPage() {
         </p>
       </section>
 
-      <GalleryPhotoExplorer images={safeImages} />
+      <Suspense fallback={<section className="mx-auto max-w-7xl px-6 pb-20 text-[#2A3A2D]/75">Loading gallery...</section>}>
+        <GalleryPhotoExplorer images={images} />
+      </Suspense>
 
       <Footer />
     </main>
