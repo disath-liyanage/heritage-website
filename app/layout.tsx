@@ -1,5 +1,6 @@
 
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { cormorant, dmSans } from "./fonts";
 
@@ -28,6 +29,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-body">
         {children}
+        <Analytics />
       </body>
     </html>
   );
