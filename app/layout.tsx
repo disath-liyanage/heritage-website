@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import "./globals.css";
-import { cormorant, dmSans } from "./fonts";
+import { cormorant } from "./fonts";
 
 const siteUrl = "https://www.heritagefamilyrest.com";
 
@@ -115,7 +115,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${dmSans.variable} h-full antialiased`}
+      className={`${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-body">
         <Script

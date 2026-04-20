@@ -9,7 +9,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         display: ['"Cormorant Garamond"', 'serif'],
-        body: ['"DM Sans"', 'sans-serif'],
+        body: ['"Poppins"', 'sans-serif'],
       },
     },
   },
