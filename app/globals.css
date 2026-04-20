@@ -1,10 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
 @import "tailwindcss";
 
 :root {
   --background: #f5f0e8;
   --foreground: #1f2a20;
   --font-display: 'Cormorant Garamond', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-body: 'Google Sans', 'Avenir Next', 'Segoe UI', sans-serif;
 }
 
 @theme inline {
@@ -26,6 +27,22 @@ html {
 
 .hero-fade-in {
   animation: hero-fade-in 900ms ease-out both;
+}
+
+.hero-image-frame {
+  will-change: width, height, border-radius;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-root {
+    min-height: 100vh;
+  }
+
+  .hero-image-frame {
+    width: min(88vw, 1120px) !important;
+    height: 64vh !important;
+    border-radius: 24px !important;
+  }
 }
 
 @keyframes hero-fade-in {
