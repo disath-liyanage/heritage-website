@@ -19,9 +19,16 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
 
+  // Handle scroll state and force "Home" to be active in the hero area
   useEffect(() => {
     const onScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const currentScroll = window.scrollY;
+      setIsScrolled(currentScroll > 50);
+      
+      // If we are at the very top (hero section), force Home to be active
+      if (currentScroll < 200) {
+        setActiveSection("home");
+      }
     };
 
     onScroll();
@@ -29,21 +36,28 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Intersection Observer for tracking scroll position past the hero
   useEffect(() => {
     if (pathname !== "/") return;
 
-    const sections = links.map((l) => document.getElementById(l.id)).filter(Boolean);
+    // Your requested TypeScript-safe filter
+    const sections = links
+      .map((l) => document.getElementById(l.id))
+      .filter((section): section is HTMLElement => section !== null);
+
     if (!sections.length) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          // Only update the active section if we've scrolled past the hero area
+          if (entry.isIntersecting && window.scrollY >= 200) {
             setActiveSection(entry.target.id);
           }
         });
       },
-      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+      // Tightened the root margin so it doesn't grab the Gallery too early
+      { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
     );
 
     sections.forEach((s) => observer.observe(s));
@@ -52,7 +66,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-400 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-400 font-[family:var(--font-body)] ${
         isScrolled
           ? "bg-[#0f0f0f]/45 backdrop-blur-[12px] backdrop-saturate-[140%] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.2)]"
           : "bg-transparent"
@@ -75,8 +89,6 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-8 md:flex">
           {links.map((link) => {
-            if (link.id === "home" && !isScrolled) return null;
-
             const isActive = activeSection === link.id;
 
             return (
@@ -120,12 +132,11 @@ export default function Navbar() {
         </button>
       </nav>
 
+      {/* Mobile Menu Dropdown */}
       {isOpen ? (
         <div className="border-t border-white/10 bg-[#0f0f0f]/95 backdrop-blur-[12px] px-6 py-4 md:hidden shadow-lg">
           <ul className="flex flex-col gap-3">
             {links.map((link) => {
-              if (link.id === "home" && !isScrolled) return null;
-              
               const isActive = activeSection === link.id;
               
               return (
