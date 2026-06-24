@@ -19,13 +19,16 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
 
-  // Handle scroll state and force "Home" to be active in the hero area
+  const isHomePage = pathname === "/";
+  
+  const showBackground = !isHomePage || isScrolled;
+  const showHomeLink = !isHomePage || isScrolled;
+
   useEffect(() => {
     const onScroll = () => {
       const currentScroll = window.scrollY;
       setIsScrolled(currentScroll > 50);
       
-      // If we are at the very top (hero section), force Home to be active
       if (currentScroll < 200) {
         setActiveSection("home");
       }
@@ -36,11 +39,9 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Intersection Observer for tracking scroll position past the hero
   useEffect(() => {
-    if (pathname !== "/") return;
+    if (!isHomePage) return;
 
-    // Your requested TypeScript-safe filter
     const sections = links
       .map((l) => document.getElementById(l.id))
       .filter((section): section is HTMLElement => section !== null);
@@ -50,24 +51,22 @@ export default function Navbar() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // Only update the active section if we've scrolled past the hero area
           if (entry.isIntersecting && window.scrollY >= 200) {
             setActiveSection(entry.target.id);
           }
         });
       },
-      // Tightened the root margin so it doesn't grab the Gallery too early
       { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
     );
 
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [isHomePage]);
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-400 font-[family:var(--font-body)] ${
-        isScrolled
+        showBackground
           ? "bg-[#0f0f0f]/45 backdrop-blur-[12px] backdrop-saturate-[140%] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.2)]"
           : "bg-transparent"
       }`}
@@ -76,7 +75,7 @@ export default function Navbar() {
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 transition-all duration-300"
         aria-label="Main navigation"
       >
-        <Link href="/#home" aria-label="Heritage Family Restaurant home">
+        <Link href={isHomePage ? "/#home" : "/"} aria-label="Heritage Family Restaurant home">
           <Image
             src="/images/logo.jpeg"
             alt="Heritage Family Restaurant logo"
@@ -89,7 +88,9 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-8 md:flex">
           {links.map((link) => {
-            const isActive = activeSection === link.id;
+            if (link.id === "home" && !showHomeLink) return null;
+
+            const isActive = isHomePage && isScrolled && activeSection === link.id;
 
             return (
               <Link
@@ -132,12 +133,13 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile Menu Dropdown */}
       {isOpen ? (
         <div className="border-t border-white/10 bg-[#0f0f0f]/95 backdrop-blur-[12px] px-6 py-4 md:hidden shadow-lg">
           <ul className="flex flex-col gap-3">
             {links.map((link) => {
-              const isActive = activeSection === link.id;
+              if (link.id === "home" && !showHomeLink) return null;
+              
+              const isActive = isHomePage && isScrolled && activeSection === link.id;
               
               return (
                 <li key={link.id}>
