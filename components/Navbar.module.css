@@ -93,6 +93,7 @@
 
 .links a.active:not(.reserveBtn) {
   color: #2D3F2B;
+}
 
 .links a.active:not(.reserveBtn)::after {
   content: '';
