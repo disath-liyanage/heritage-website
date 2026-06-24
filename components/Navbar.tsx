@@ -1,128 +1,87 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import styles from "./Navbar.module.css";
 
-const links = [
-  { href: "/menu", label: "Menu" },
-  { href: "/treehouse", label: "Tree House" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/contact", label: "Contact" },
+const LINKS = [
+  { id: "menu", label: "Menu" },
+  { id: "treehouse", label: "Tree House" },
+  { id: "gallery", label: "Gallery" },
 ];
 
 export default function Navbar() {
-  const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const useLightNavbar = pathname !== "/" || isScrolled;
+  const [active, setActive] = useState("home");
+  const [pastHero, setPastHero] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      setIsScrolled(window.scrollY > 16);
-    };
+    const hero = document.getElementById("home");
+    if (!hero) {
+      setPastHero(true);
+      return;
+    }
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => setPastHero(!entry.isIntersecting),
+      { rootMargin: "-80% 0px 0px 0px" }
+    );
+    
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
 
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+  useEffect(() => {
+    const sections = LINKS.map((l) => document.getElementById(l.id)).filter(Boolean);
+    
+    const contactSection = document.getElementById("contact");
+    if (contactSection) sections.push(contactSection);
+
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
+    
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        useLightNavbar
-          ? "border-b border-[#D8CCB8] bg-[#F5F0E8]/95 backdrop-blur"
-          : "bg-transparent"
-      }`}
-    >
-      <nav
-        className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3"
-        aria-label="Main navigation"
-      >
-        <Link href="/" aria-label="Heritage Family Restaurant home">
+    <header className={`${styles.wrap} ${pastHero ? styles.visible : ""}`}>
+      <nav className={styles.glass} aria-label="Primary">
+        <a href="#home" className={styles.logo} aria-label="Heritage Family Restaurant home">
           <Image
             src="/images/logo.jpeg"
             alt="Heritage Family Restaurant logo"
             width={160}
             height={48}
-            className="h-12 w-auto object-contain"
             priority
           />
-        </Link>
+        </a>
 
-        <div className="hidden items-center gap-8 md:flex">
-          {links.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className={`text-sm font-medium transition-colors ${
-                useLightNavbar
-                  ? "text-[#2D3F2B] hover:text-[#1C2B1E]"
-                  : "text-[#F5F0E8] hover:text-[#E7DBC7]"
-              }`}
+        <div className={styles.links}>
+          {LINKS.map((link) => (
+            <a
+              key={link.id}
+              href={`#${link.id}`}
+              className={active === link.id ? styles.active : ""}
             >
               {link.label}
-            </Link>
+            </a>
           ))}
-          <Link
-            href="/contact"
-            className={`rounded-full border px-5 py-2 text-sm font-semibold transition-colors ${
-              useLightNavbar
-                ? "border-[#2D3F2B] text-[#2D3F2B] hover:bg-[#2D3F2B] hover:text-[#F5F0E8]"
-                : "border-[#F5F0E8] text-[#F5F0E8] hover:bg-[#F5F0E8] hover:text-[#1C2B1E]"
-            }`}
+          <a 
+            href="#contact" 
+            className={`${styles.reserveBtn} ${active === "contact" ? styles.activeBtn : ""}`}
           >
             Reserve a table
-          </Link>
+          </a>
         </div>
-
-        <button
-          type="button"
-          className={`inline-flex h-10 w-10 items-center justify-center rounded md:hidden ${
-            useLightNavbar ? "text-[#1C2B1E]" : "text-[#F5F0E8]"
-          }`}
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-expanded={isOpen}
-          aria-label="Toggle menu"
-        >
-          <span className="sr-only">Menu</span>
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2">
-            {isOpen ? (
-              <path d="M6 6l12 12M18 6L6 18" />
-            ) : (
-              <path d="M3 6h18M3 12h18M3 18h18" />
-            )}
-          </svg>
-        </button>
       </nav>
-
-      {isOpen ? (
-        <div className="border-t border-[#D8CCB8] bg-[#F5F0E8] px-6 py-4 md:hidden">
-          <ul className="flex flex-col gap-3">
-            {links.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={link.href}
-                  className="block py-1 text-[#2D3F2B]"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link
-                href="/contact"
-                className="mt-2 inline-flex rounded-full border border-[#2D3F2B] px-5 py-2 text-sm font-semibold text-[#2D3F2B]"
-                onClick={() => setIsOpen(false)}
-              >
-                Reserve a table
-              </Link>
-            </li>
-          </ul>
-        </div>
-      ) : null}
     </header>
   );
 }
