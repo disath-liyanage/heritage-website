@@ -20,16 +20,14 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
 
   const isHomePage = pathname === "/";
-  
   const showBackground = !isHomePage || isScrolled;
   const showHomeLink = !isHomePage || isScrolled;
 
   useEffect(() => {
     const onScroll = () => {
-      const currentScroll = window.scrollY;
-      setIsScrolled(currentScroll > 50);
+      setIsScrolled(window.scrollY > 50);
       
-      if (currentScroll < 200) {
+      if (window.scrollY < 200) {
         setActiveSection("home");
       }
     };
@@ -65,14 +63,15 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-400 font-[family:var(--font-body)] ${
+      style={{ fontFamily: "'Google Sans', var(--font-body), sans-serif" }}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-400 ${
         showBackground
-          ? "bg-[#0f0f0f]/45 backdrop-blur-[12px] backdrop-saturate-[140%] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.2)]"
-          : "bg-transparent"
+          ? "bg-[#f5f0e8]/40 backdrop-blur-[20px] backdrop-saturate-[140%] border-b border-[#d8ccb8]/30 shadow-sm"
+          : "bg-transparent pointer-events-none"
       }`}
     >
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 transition-all duration-300"
+        className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 transition-all duration-300 pointer-events-auto"
         aria-label="Main navigation"
       >
         <Link href={isHomePage ? "/#home" : "/"} aria-label="Heritage Family Restaurant home">
@@ -81,7 +80,9 @@ export default function Navbar() {
             alt="Heritage Family Restaurant logo"
             width={160}
             height={48}
-            className="h-12 w-auto object-contain"
+            className={`h-12 w-auto object-contain transition-all duration-300 ${
+              !showBackground ? "mix-blend-difference" : ""
+            }`}
             priority
           />
         </Link>
@@ -90,16 +91,22 @@ export default function Navbar() {
           {links.map((link) => {
             if (link.id === "home" && !showHomeLink) return null;
 
-            const isActive = isHomePage && isScrolled && activeSection === link.id;
+            const isActive = isHomePage && activeSection === link.id;
 
             return (
               <Link
                 key={link.id}
                 href={link.href}
                 className={`relative text-sm whitespace-nowrap transition-all duration-300 px-1 py-1 ${
-                  isActive
-                    ? "text-white font-bold drop-shadow-[0_1px_5px_rgba(0,0,0,0.9)] after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-[2px] after:h-[1px] after:bg-white after:opacity-70"
-                    : "text-gray-300 font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] hover:text-white hover:font-bold hover:drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]"
+                  showBackground
+                    ?
+                      isActive
+                        ? "text-[#1f2a20] font-bold after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-[2px] after:h-[2px] after:bg-[#1f2a20]"
+                        : "text-[#1f2a20] font-semibold hover:font-bold"
+                    :
+                      isActive
+                        ? "text-white mix-blend-difference font-bold after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-[2px] after:h-[2px] after:bg-white"
+                        : "text-white mix-blend-difference font-semibold hover:font-bold"
                 }`}
               >
                 {link.label}
@@ -109,7 +116,11 @@ export default function Navbar() {
           
           <Link
             href="/#contact"
-            className="rounded-full border border-white/80 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-white hover:text-black hover:border-white shadow-sm"
+            className={`rounded-full border px-5 py-2 text-sm font-semibold transition-all shadow-sm ${
+              showBackground
+                ? "border-[#1f2a20] text-[#1f2a20] hover:bg-[#1f2a20] hover:text-[#f5f0e8]"
+                : "border-white text-white mix-blend-difference hover:bg-white hover:text-black hover:mix-blend-normal"
+            }`}
           >
             Reserve a table
           </Link>
@@ -117,7 +128,11 @@ export default function Navbar() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded text-white md:hidden hover:bg-white/10 transition-colors"
+          className={`inline-flex h-10 w-10 items-center justify-center rounded md:hidden transition-colors ${
+            showBackground
+              ? "text-[#1f2a20] hover:bg-[#1f2a20]/10"
+              : "text-white mix-blend-difference hover:bg-white/20"
+          }`}
           onClick={() => setIsOpen((prev) => !prev)}
           aria-expanded={isOpen}
           aria-label="Toggle menu"
@@ -134,19 +149,21 @@ export default function Navbar() {
       </nav>
 
       {isOpen ? (
-        <div className="border-t border-white/10 bg-[#0f0f0f]/95 backdrop-blur-[12px] px-6 py-4 md:hidden shadow-lg">
+        <div className="border-t border-[#d8ccb8]/30 bg-[#f5f0e8]/95 backdrop-blur-[20px] px-6 py-4 md:hidden shadow-lg pointer-events-auto">
           <ul className="flex flex-col gap-3">
             {links.map((link) => {
               if (link.id === "home" && !showHomeLink) return null;
               
-              const isActive = isHomePage && isScrolled && activeSection === link.id;
+              const isActive = isHomePage && activeSection === link.id;
               
               return (
                 <li key={link.id}>
                   <Link
                     href={link.href}
                     className={`block py-2 transition-colors ${
-                      isActive ? "font-bold text-white border-l-2 border-white pl-3" : "text-gray-300 font-medium pl-3 hover:text-white"
+                      isActive 
+                        ? "font-bold text-[#1f2a20] border-l-2 border-[#1f2a20] pl-3" 
+                        : "text-[#1f2a20] font-medium pl-3 hover:font-bold"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
@@ -158,7 +175,7 @@ export default function Navbar() {
             <li className="mt-4 mb-2">
               <Link
                 href="/#contact"
-                className="inline-flex w-full justify-center rounded-full border border-white px-5 py-3 text-sm font-semibold text-white hover:bg-white hover:text-black transition-all"
+                className="inline-flex w-full justify-center rounded-full border border-[#1f2a20] px-5 py-3 text-sm font-semibold text-[#1f2a20] hover:bg-[#1f2a20] hover:text-[#f5f0e8] transition-all shadow-sm"
                 onClick={() => setIsOpen(false)}
               >
                 Reserve a table
