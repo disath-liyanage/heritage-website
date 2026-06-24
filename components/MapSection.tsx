@@ -10,7 +10,7 @@ type ClientMapProps = {
 
 const ClientMap = dynamic<ClientMapProps>(
   async () => {
-    const { GoogleMap, Marker, useJsApiLoader } = await import("@react-google-maps/api");
+    const { GoogleMap, Marker, InfoWindow, useJsApiLoader } = await import("@react-google-maps/api");
 
     return function ClientMapInner({ apiKey }: ClientMapProps) {
       const { isLoaded, loadError } = useJsApiLoader({
@@ -31,24 +31,63 @@ const ClientMap = dynamic<ClientMapProps>(
       }
 
       return (
-        <GoogleMap
-          mapContainerStyle={{ 
-            width: "100%", 
-            height: "450px",
-            borderRadius: "1.5rem"
-          }}
-          center={center}
-          zoom={14}
-          options={{
-            zoomControl: true,
-            scrollwheel: true,
-            mapTypeControl: true,
-            streetViewControl: false,
-            fullscreenControl: false,
-          }}
-        >
-          <Marker position={center} label="Heritage Family Restaurant" />
-        </GoogleMap>
+        <>
+          <style>{`
+            .gm-ui-hover-effect {
+              display: none !important;
+            }
+            .gm-style-iw-d {
+              padding-right: 0 !important; 
+            }
+          `}</style>
+
+          <GoogleMap
+            mapContainerStyle={{ 
+              width: "100%", 
+              height: "450px",
+              borderRadius: "1.5rem" 
+            }}
+            center={center}
+            zoom={14}
+            options={{
+              zoomControl: true,
+              scrollwheel: true,
+              mapTypeControl: true,
+              streetViewControl: false,
+              fullscreenControl: false,
+            }}
+          >
+            <Marker position={center} />
+
+            <InfoWindow 
+              position={center} 
+              options={{ 
+                pixelOffset: new window.google.maps.Size(0, -35),
+                disableAutoPan: true
+              }}
+            >
+              <div className="flex flex-col gap-1 p-1 text-[#1C2B1E] min-w-[200px]">
+                <span className="text-sm font-bold">
+                  Heritage Family Restaurant
+                </span>
+                <span className="text-xs font-normal text-[#5A674F]">
+                  A7, Thunkinda, Yatiyanthota
+                </span>
+                <span className="text-xs font-normal text-[#5A674F]">
+                  Sri Lanka 71724
+                </span>
+                <a 
+                  href="https://maps.app.goo.gl/XyKPGNf9t7nHyNrf6" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="mt-1 text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline inline-block w-max"
+                >
+                  View on Google Maps
+                </a>
+              </div>
+            </InfoWindow>
+          </GoogleMap>
+        </>
       );
     };
   },
@@ -64,7 +103,7 @@ export default function MapSection() {
   return (
     <section id="location" className="bg-[#F5F0E8] py-20" aria-label="Location section">
       <div className="mx-auto max-w-7xl px-6">
-        <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl">Find us on Google</h2>
+        <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl">Find us on Google Maps</h2>
 
         <div className="mt-8 overflow-hidden rounded-3xl border border-[#DDCFB9] bg-[#EDE5D8]">
           {!mapsApiKey ? (
