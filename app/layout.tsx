@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
@@ -6,6 +5,14 @@ import "./globals.css";
 import { cormorant } from "./fonts";
 
 const siteUrl = "https://www.heritagefamilyrest.com";
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Heritage Family Restaurant",
+  alternateName: "Heritage Family Rest",
+  url: siteUrl,
+};
 
 const restaurantSchema = {
   "@context": "https://schema.org",
@@ -70,7 +77,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Heritage Family Restaurant | Treehouse Dining by the Kelani River, Yatiyanthota",
   description:
-    "Heritage Family Restaurant — A riverside dining experience beside the Kelani River in Yatiyanthota, Sri Lanka. Featuring The Magical Tree House, Sri Lankan cuisine, and stunning river views near Kithulgala.",
+    "Heritage Family Restaurant - A riverside dining experience beside the Kelani River in Yatiyanthota, Sri Lanka. Featuring The Magical Tree House, Sri Lankan cuisine, and stunning river views near Kithulgala.",
   authors: [{ name: "Heritage Family Restaurant" }],
   keywords: [
     "Heritage Family Restaurant",
@@ -81,11 +88,14 @@ export const metadata: Metadata = {
     "Kelani River restaurant",
     "heritagefamilyrest.com",
     "family restaurant Sri Lanka",
+    "heritage restaurant",
+    "Heritage family rest",
   ],
   alternates: {
     canonical: siteUrl,
   },
   openGraph: {
+    siteName: "Heritage Family Restaurant",
     title: "Heritage Family Restaurant | The Magical Tree House, Yatiyanthota",
     description:
       "Riverside dining and treetop experiences beside the Kelani River. Visit Heritage Family Restaurant and The Magical Tree House in Yatiyanthota, Sri Lanka.",
@@ -118,6 +128,12 @@ export default function RootLayout({
       className={`${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-body">
+        <Script
+          id="website-jsonld"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
         <Script
           id="restaurant-jsonld"
           type="application/ld+json"
