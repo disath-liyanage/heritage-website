@@ -247,7 +247,7 @@ export default function Reviews() {
           What Our Customers Say about us
         </h2>
 
-        <div className="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white p-4 md:px-6 md:py-4 rounded-2xl shadow-sm border border-gray-200 w-full">
+        <div className="mb-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white p-4 md:px-6 md:py-4 rounded-2xl shadow-sm border border-gray-200 w-full">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <img src="/images/google.svg" alt="Google" className="h-[26px] w-auto" />
@@ -298,7 +298,7 @@ export default function Reviews() {
           <div
             ref={rowRef}
             onScroll={handleScroll}
-            className="flex items-start snap-x snap-mandatory gap-4 overflow-x-auto pt-2 pb-4 scrollbar-hide w-full"
+            className="flex items-start snap-x snap-mandatory gap-3.5 overflow-x-auto pt-2 pb-4 scrollbar-hide w-full"
           >
             {groupedReviews.map((group) => {
               if (group.type === 'single') {
@@ -312,7 +312,7 @@ export default function Reviews() {
                 );
               } else {
                 return (
-                  <div key={group.id} className="min-w-[320px] max-w-[320px] snap-start flex flex-col gap-4 flex-shrink-0">
+                  <div key={group.id} className="min-w-[320px] max-w-[320px] snap-start flex flex-col gap-3.5 flex-shrink-0">
                     {group.items.map((review, i) => (
                       <article
                         key={`${group.id}-${i}`}
