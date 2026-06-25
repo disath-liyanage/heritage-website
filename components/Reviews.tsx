@@ -40,6 +40,7 @@ export default function Reviews() {
         setIsLoading(false);
       }
     }
+
     fetchReviews();
   }, []);
 
@@ -49,13 +50,16 @@ export default function Reviews() {
 
     const timer = setInterval(() => {
       if (!rowRef.current) return;
+
       const { scrollLeft, scrollWidth, clientWidth } = rowRef.current;
       const reachedEnd = scrollLeft + clientWidth >= scrollWidth - 12;
+
       rowRef.current.scrollBy({
         left: reachedEnd ? -scrollWidth : 360,
         behavior: "smooth",
       });
     }, 3500);
+
     return () => clearInterval(timer);
   }, [isPaused, reviews.length]);
 
@@ -64,7 +68,11 @@ export default function Reviews() {
   };
 
   if (isLoading) {
-    return <section className="bg-[#F8F4EC] py-20 min-h-[400px] flex items-center justify-center text-[#8A7A61]">Loading reviews...</section>;
+    return (
+      <section className="bg-[#F8F4EC] py-20 min-h-[400px] flex items-center justify-center text-[#8A7A61]">
+        Loading reviews...
+      </section>
+    );
   }
 
   if (reviews.length === 0) return null;
@@ -73,17 +81,37 @@ export default function Reviews() {
     <section id="reviews" className="bg-[#F8F4EC] py-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl">What our guests say</h2>
+          <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl">
+            What our guests say
+          </h2>
+
           <div className="rounded-full border border-[#D4C5AE] bg-white px-5 py-2 text-sm text-[#2B3A2E] flex items-center shadow-sm">
-            <span className="mr-2 flex items-center justify-center rounded-full bg-[#4285F4] h-5 w-5 text-[10px] font-bold text-white">G</span>
-            <span className="font-semibold">4.7 / 5</span> 
-            <span className="ml-1 text-[#8A7A61]">({reviews.length} reviews)</span>
+            <span className="mr-2 flex items-center justify-center rounded-full bg-[#4285F4] h-5 w-5 text-[10px] font-bold text-white">
+              G
+            </span>
+            <span className="font-semibold">4.7 / 5</span>
+            <span className="ml-1 text-[#8A7A61]">
+              ({reviews.length} reviews)
+            </span>
           </div>
         </div>
 
         <div className="mb-4 flex justify-end gap-2">
-          <button type="button" onClick={() => scrollByAmount(-360)} className="rounded-full border border-[#D4C5AE] bg-white px-4 py-2 text-[#2B3A2E] hover:bg-[#F0EBE1] transition-colors">←</button>
-          <button type="button" onClick={() => scrollByAmount(360)} className="rounded-full border border-[#D4C5AE] bg-white px-4 py-2 text-[#2B3A2E] hover:bg-[#F0EBE1] transition-colors">→</button>
+          <button
+            type="button"
+            onClick={() => scrollByAmount(-360)}
+            className="rounded-full border border-[#D4C5AE] bg-white px-4 py-2 text-[#2B3A2E] hover:bg-[#F0EBE1] transition-colors"
+          >
+            ←
+          </button>
+
+          <button
+            type="button"
+            onClick={() => scrollByAmount(360)}
+            className="rounded-full border border-[#D4C5AE] bg-white px-4 py-2 text-[#2B3A2E] hover:bg-[#F0EBE1] transition-colors"
+          >
+            →
+          </button>
         </div>
 
         <div
@@ -100,8 +128,8 @@ export default function Reviews() {
               <div>
                 <header className="mb-4 flex items-center gap-3">
                   {review.reviewerPhotoUrl ? (
-                    <img 
-                      src={review.reviewerPhotoUrl} 
+                    <img
+                      src={review.reviewerPhotoUrl}
                       alt={review.name}
                       className="h-11 w-11 rounded-full object-cover border border-[#E2D6C5]"
                       referrerPolicy="no-referrer"
@@ -111,23 +139,36 @@ export default function Reviews() {
                       {initials(review.name)}
                     </div>
                   )}
+
                   <div>
-                    <p className="font-semibold text-[#243024] line-clamp-1">{review.name}</p>
+                    <p className="font-semibold text-[#243024] line-clamp-1">
+                      {review.name}
+                    </p>
+
                     <div className="text-[#FABB05] text-sm tracking-widest mt-0.5">
                       {"★".repeat(review.stars || 0)}
-                      <span className="text-gray-300">{"★".repeat(5 - (review.stars || 0))}</span>
+                      <span className="text-gray-300">
+                        {"★".repeat(5 - (review.stars || 0))}
+                      </span>
                     </div>
                   </div>
                 </header>
 
                 {review.text && (
-                  <p className="line-clamp-4 text-sm leading-relaxed text-[#4A554A] mb-3">{review.text}</p>
+                  <p className="line-clamp-4 text-sm leading-relaxed text-[#4A554A] mb-3">
+                    {review.text}
+                  </p>
                 )}
 
-                {review.reviewImageUrls && review.reviewImageUrls.length > 0 && (
+                {review.reviewImageUrls?.length > 0 && (
                   <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                     {review.reviewImageUrls.map((photoUrl, i) => (
-                      <img key={i} src={photoUrl} alt="Review" className="h-16 w-16 object-cover rounded-md border border-[#E2D6C5] flex-shrink-0" />
+                      <img
+                        key={i}
+                        src={photoUrl}
+                        alt="Review"
+                        className="h-16 w-16 object-cover rounded-md border border-[#E2D6C5] flex-shrink-0"
+                      />
                     ))}
                   </div>
                 )}
@@ -135,7 +176,11 @@ export default function Reviews() {
 
               <footer className="mt-4 flex items-center justify-between text-xs text-[#8A7A61] pt-4 border-t border-[#F0EBE1]">
                 <span>{review.publishAt}</span>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" className="h-4 w-4 grayscale opacity-60" />
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                  alt="Google"
+                  className="h-4 w-4 grayscale opacity-60"
+                />
               </footer>
             </article>
           ))}
