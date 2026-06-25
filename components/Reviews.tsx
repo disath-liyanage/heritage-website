@@ -70,7 +70,7 @@ export default function Reviews() {
   if (reviews.length === 0) return null;
 
   return (
-    <section id="reviews" className="bg-[#F8F4EC] py-20" aria-label="Reviews section">
+    <section id="reviews" className="bg-[#F8F4EC] py-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl">What our guests say</h2>
