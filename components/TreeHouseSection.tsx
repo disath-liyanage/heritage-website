@@ -3,19 +3,19 @@ import Link from "next/link";
 
 export default function SplitExperienceSection() {
   return (
-    <section className="flex flex-col md:flex-row h-[70vh] min-h-[500px] w-full overflow-hidden bg-[#1C2B1E]">
+    <section className="flex flex-col md:flex-row h-[70vh] min-h-[500px] w-full gap-2 bg-transparent">
       
       <Link
         href="/treehouse"
-        className="group relative flex-1 flex items-center justify-center overflow-hidden transition-[flex] duration-700 ease-out hover:flex-[1.5] md:hover:flex-[1.5] cursor-pointer"
+        className="group relative flex-1 flex items-center justify-center overflow-hidden z-0 rounded-b-3xl md:rounded-bl-none md:rounded-tr-3xl md:rounded-br-3xl [-webkit-mask-image:-webkit-radial-gradient(white,black)] [mask-image:radial-gradient(white,black)] transition-[flex] duration-700 ease-in-out hover:flex-[1.5] cursor-pointer"
         aria-label="Explore Tree House"
       >
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 -z-10">
           <Image
             src="/images/treehouse/bed.jpeg"
             alt="Explore the Tree House"
             fill
-            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110 group-hover:-translate-x-8"
+            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110 group-hover:translate-x-8"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
@@ -34,10 +34,10 @@ export default function SplitExperienceSection() {
 
       <Link
         href="/menu"
-        className="group relative flex-1 flex items-center justify-center overflow-hidden transition-[flex] duration-700 ease-out hover:flex-[1.5] md:hover:flex-[1.5] cursor-pointer"
+        className="group relative flex-1 flex items-center justify-center overflow-hidden z-0 rounded-t-3xl md:rounded-tr-none md:rounded-tl-3xl md:rounded-bl-3xl [-webkit-mask-image:-webkit-radial-gradient(white,black)] [mask-image:radial-gradient(white,black)] transition-[flex] duration-700 ease-in-out hover:flex-[1.5] cursor-pointer"
         aria-label="View Menu"
       >
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 -z-10">
           <Image
             src="/images/food/table.jpeg" 
             alt="View Our Menu"
