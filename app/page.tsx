@@ -21,7 +21,7 @@ export default async function Page() {
       <Navbar />
       <Hero imageSrc={heroImage} />
       <PhotoCarousel images={images} />
-      <TreeHouseSection imageSrc={treeHouseImage} />
+      <TreeHouseSection />
       <Reviews />
       <MapSection />
       <Footer />
