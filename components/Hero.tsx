@@ -122,8 +122,11 @@ export default function Hero({ imageSrc }: HeroProps) {
             <p className="mb-0 text-xs uppercase tracking-[0.25em] md:text-sm">
               Thunkinda | Yatiyanthota
             </p>
+            
             <h1 className="font-body text-3xl font-bold leading-tight tracking-[0.01em] md:text-7xl">
-              HERITAGE FAMILY RESTAURANT
+              <span className="blur-text-span delay-1">HERITAGE</span>{" "}
+              <span className="blur-text-span delay-2">FAMILY</span>{" "}
+              <span className="blur-text-span delay-3">RESTAURANT</span>
             </h1>
 
             <div className="mx-auto mt-5 flex w-full max-w-[360px] flex-nowrap items-center justify-center gap-2 md:mt-8 md:max-w-none md:gap-4">

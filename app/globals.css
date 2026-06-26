@@ -56,6 +56,30 @@ html {
   }
 }
 
+.blur-text-span {
+  color: transparent;
+  animation: text-blur-in 2.5s ease-out forwards;
+  display: inline-block; 
+}
+
+.blur-text-span.delay-1 { animation-delay: 0.1s; }
+.blur-text-span.delay-2 { animation-delay: 0.3s; }
+.blur-text-span.delay-3 { animation-delay: 0.5s; }
+
+@keyframes text-blur-in {
+  0% { 
+    text-shadow: 0 0 100px var(--background); 
+    opacity: 0; 
+  }
+  50% {
+    text-shadow: 0 0 40px var(--background);
+  }
+  100% { 
+    text-shadow: 0 0 0px var(--background); 
+    opacity: 1; 
+  }
+}
+
 .carousel-track {
   animation: scroll-x 35s linear infinite;
 }
