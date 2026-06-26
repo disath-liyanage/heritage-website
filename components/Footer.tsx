@@ -72,10 +72,10 @@ export default function Footer() {
               <a href="https://www.tripadvisor.com/Restaurant_Review-g26500862-d16898051-Reviews-Heritage_Family_Restaurant-Hakbellawaka_Sabaragamuwa_Province.html" target="_blank" rel="noreferrer" aria-label="Tripadvisor" className="text-[#F5F0E8]/80 hover:text-[#F5F0E8]">
                 <SiTripadvisor className="h-5 w-5" />
               </a>
-              <a href="https://www.booking.com/Share-xaiO6g" target="_blank" rel="noreferrer" aria-label="Booking.com" className="text-[#F5F0E8]/80 hover:text-[#F5F0E8]">
+              <a href="https://www.booking.com/hotel/lk/the-magical-tree-house.en-gb.html" target="_blank" rel="noreferrer" aria-label="Booking.com" className="text-[#F5F0E8]/80 hover:text-[#F5F0E8]">
                 <SiBookingdotcom className="h-5 w-5" />
               </a>
-              <a href="https://www.airbnb.com/rooms/1475264680546928390?check_in=2026-04-21&check_out=2026-04-22&guests=1&adults=1&s=67&unique_share_id=6eb33a4b-b45c-4285-8b9b-2d0dc5cc727f" target="_blank" rel="noreferrer" aria-label="Airbnb" className="text-[#F5F0E8]/80 hover:text-[#F5F0E8]">
+              <a href="https://www.airbnb.com/rooms/1475264680546928390" target="_blank" rel="noreferrer" aria-label="Booking.com" className="text-[#F5F0E8]/80 hover:text-[#F5F0E8]">
                 <SiAirbnb className="h-5 w-5" />
               </a>
             </div>
