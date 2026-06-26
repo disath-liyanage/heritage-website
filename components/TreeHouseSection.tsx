@@ -1,61 +1,63 @@
 import Image from "next/image";
 import Link from "next/link";
 
-type TreeHouseSectionProps = {
-  imageSrc: string;
-};
-
-const features = [
-  "Treetop dining with Kelani River views",
-  "Available for lunch and dinner",
-  "Ideal for families and special occasions",
-  "Located in Thunkinda, Yatiyanthota near Kithulgala",
-];
-
-export default function TreeHouseSection({ imageSrc }: TreeHouseSectionProps) {
+export default function SplitExperienceSection() {
   return (
-    <section id="treehouse" className="bg-[#FAF6EF] py-20" aria-label="Tree House section">
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-2">
-        <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-[#6A5A43]">Our signature experience</p>
-          <h2 className="mt-4 font-display text-4xl text-[#1C2B1E] md:text-5xl">
-            The Magical Tree House by Heritage Family Restaurant
-          </h2>
-          <p className="mt-6 max-w-xl text-[#3E493E]">
-            Perched above the Kelani River in the lush forests of Yatiyanthota, The Magical Tree House offers a one-of-a-kind dining experience. Perfect for families, couples, and nature lovers - reserve your table in the treetops today.
-          </p>
-
-          <ul className="mt-6 space-y-3 text-[#2F3A30]">
-            {features.map((feature) => (
-              <li key={feature} className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 text-[#507341]">
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-                    <path d="M12 2c5.523 0 10 4.477 10 10 0 4.97-3.622 9.094-8.373 9.878L12 22l-1.627-.122C5.622 21.094 2 16.97 2 12 2 6.477 6.477 2 12 2Zm2.72 5.183c-4.168 1.563-7.092 4.596-8.265 8.807 3.927-.916 7.143-3.812 8.265-8.807Z" />
-                  </svg>
-                </span>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-
-          <Link
-            href="/contact"
-            className="mt-8 inline-flex rounded-full bg-[#2E4830] px-7 py-3 text-sm font-semibold text-[#F5F0E8] transition hover:bg-[#1C2B1E]"
-          >
-            Reserve the Tree House
-          </Link>
-        </div>
-
-        <div className="relative h-105 overflow-hidden rounded-lg shadow-lg">
+    <section className="flex flex-col md:flex-row h-[70vh] min-h-[500px] w-full overflow-hidden bg-[#1C2B1E]">
+      
+      <Link
+        href="/treehouse"
+        className="group relative flex-1 flex items-center justify-center overflow-hidden transition-[flex] duration-700 ease-out hover:flex-[1.5] md:hover:flex-[1.5] cursor-pointer"
+        aria-label="Explore Tree House"
+      >
+        <div className="absolute inset-0 z-0">
           <Image
-            src={imageSrc}
-            alt="The Magical Tree House by Heritage Family Restaurant, Yatiyanthota"
+            src="/images/treehouse/bed.jpeg"
+            alt="Explore the Tree House"
             fill
-            className="object-cover"
-            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110 group-hover:-translate-x-8"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
           />
+          <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/50" />
         </div>
-      </div>
+
+        <div className="relative z-10 flex flex-col items-center p-6 text-center">
+          <h2 className="font-display text-4xl font-bold text-white md:text-5xl tracking-wide">
+            Explore Tree House
+          </h2>
+          <span className="mt-6 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 px-8 py-3 text-sm font-semibold text-white transition-all duration-300 group-hover:bg-white group-hover:text-black">
+            Visit the Tree House
+          </span>
+        </div>
+      </Link>
+
+      <Link
+        href="/menu"
+        className="group relative flex-1 flex items-center justify-center overflow-hidden transition-[flex] duration-700 ease-out hover:flex-[1.5] md:hover:flex-[1.5] cursor-pointer"
+        aria-label="View Menu"
+      >
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/food/table.jpeg" 
+            alt="View Our Menu"
+            fill
+            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110 group-hover:-translate-x-8"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+          <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/60" />
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center p-6 text-center h-32 justify-center">
+          <h2 className="font-display text-4xl font-bold text-white md:text-5xl tracking-wide transition-transform duration-500 group-hover:-translate-y-3">
+            View Menu
+          </h2>
+          <span className="absolute bottom-4 opacity-0 transform translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 text-gray-200 font-medium tracking-widest uppercase text-xs sm:text-sm">
+            Click to view the menu page
+          </span>
+        </div>
+      </Link>
+
     </section>
   );
 }
