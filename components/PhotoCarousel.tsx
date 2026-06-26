@@ -43,20 +43,24 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
         </h2>
       </div>
 
-      <div className="overflow-hidden" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-        <div className={`carousel-track flex w-max gap-4 px-6 ${paused ? "paused" : ""}`}>
+      <div 
+        className="overflow-hidden" 
+        onMouseEnter={() => setPaused(true)} 
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div className={`carousel-track flex w-max items-center gap-4 px-6 h-[400px] ${paused ? "paused" : ""}`}>
           {loopImages.map((src, index) => (
             <Link
               key={`${src}-${index}`}
               href={`/gallery?photo=${encodeURIComponent(src)}`}
-              className="relative h-52.5 w-75 shrink-0 overflow-hidden rounded-lg"
+              className="relative shrink-0 overflow-hidden rounded-lg transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] h-[250px] w-[350px] hover:h-[350px] hover:w-[500px]"
             >
               <Image
                 src={src}
                 alt={getImageAlt(src)}
                 fill
                 className="object-cover"
-                sizes="300px"
+                sizes="(max-width: 768px) 100vw, 500px"
               />
             </Link>
           ))}
