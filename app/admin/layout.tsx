@@ -9,9 +9,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!user) redirect('/login')
 
   return (
-    <div className="min-h-screen bg-stone-950 text-white">
+    <div className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
       <AdminNav />
-      <main className="max-w-5xl mx-auto px-6 py-8">{children}</main>
+      <main className="mx-auto max-w-7xl px-6 py-10">
+        {children}
+      </main>
     </div>
   )
 }
