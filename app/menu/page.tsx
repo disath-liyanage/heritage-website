@@ -45,7 +45,6 @@ export default async function MenuPage() {
       <Navbar />
 
       <section className="mx-auto max-w-7xl px-6 pb-16 pt-36">
-        <p className="text-xs uppercase tracking-[0.25em] text-[#6A5A43]">Heritage Family Restaurant</p>
         <h1 className="mt-3 font-display text-5xl text-[#1F2D21] md:text-6xl">Menu</h1>
         <p className="mt-4 max-w-3xl text-sm text-[#2A3A2D]/85 md:text-base">
           Freshly prepared Sri Lankan cuisine served riverside. Prices may vary by season.
