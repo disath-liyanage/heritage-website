@@ -103,7 +103,7 @@ export default function MapSection() {
   const mapsApiKey = (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "").trim();
 
   return (
-    <section id="location" className="bg-[#F5F0E8] pt-20" aria-label="Location section">
+    <section id="find" className="bg-[#F5F0E8] pt-20" aria-label="Location section">
       <div className="mx-auto max-w-7xl px-6">
         <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl">Find us on Google Maps</h2>
 

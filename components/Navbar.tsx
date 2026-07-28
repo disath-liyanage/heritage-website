@@ -9,8 +9,8 @@ const links = [
   { id: "home", href: "/#home", label: "Home" },
   { id: "gallery", href: "/#gallery", label: "Gallery" },
   { id: "treehouse", href: "/#treehouse", label: "Tree House" },
-  { id: "menu", href: "/#menu", label: "Menu" },
-  { id: "contact", href: "/#contact", label: "Contact" },
+  { id: "reviews", href: "/#reviews", label: "Reviews" },
+  { id: "find", href: "/#find", label: "Find Us" },
 ];
 
 export default function Navbar() {
@@ -115,14 +115,14 @@ export default function Navbar() {
           })}
           
           <Link
-            href="/#contact"
+            href="/treehouse/#reserve"
             className={`rounded-full border px-5 py-2 text-sm font-semibold transition-all shadow-sm ${
               showBackground
                 ? "border-[#1f2a20] text-[#1f2a20] hover:bg-[#1f2a20] hover:text-[#f5f0e8]"
                 : "border-white text-white mix-blend-difference hover:bg-white hover:text-black hover:mix-blend-normal"
             }`}
           >
-            Reserve a table
+            Reserve a Stay
           </Link>
         </div>
 

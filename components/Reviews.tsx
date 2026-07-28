@@ -229,7 +229,7 @@ export default function Reviews() {
 
   if (isLoading) {
     return (
-      <section className="bg-[#F8F4EC] py-20 min-h-[400px] flex items-center justify-center text-gray-500">
+      <section className="bg-[#F8F4EC] py-20 min-h-[400px] flex items-center justify-center text-gray-500" id="reviews">
         Loading reviews...
       </section>
     );

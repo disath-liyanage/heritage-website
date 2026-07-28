@@ -27,7 +27,7 @@ export default function TreeHousePage() {
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
       <Navbar />
       
-      <section className="mx-auto max-w-7xl px-6 pb-12 pt-36 text-center">
+      <section className="mx-auto max-w-7xl px-6 pb-12 pt-36 text-center" id="treepage">
         <p className="text-xs uppercase tracking-[0.25em] text-[#6A5A43]">Our Signature Experience</p>
         <h1 className="mt-4 font-display text-5xl text-[#1F2D21] md:text-6xl max-w-4xl mx-auto">
           The Magical Tree House
@@ -100,7 +100,7 @@ export default function TreeHousePage() {
         </div>
       </section>
 
-      <section className="bg-[#1C2B1E] py-20 text-center text-[#F5F0E8] px-6 my-8">
+      <section className="bg-[#1C2B1E] py-20 text-center text-[#F5F0E8] px-6 my-8" id="reserve">
         <h2 className="text-4xl font-display mb-4">See What's Cooking</h2>
         <p className="max-w-2xl mx-auto mb-10 text-[#A1B09F] text-lg">
           A view this good deserves food to match. Before you lock in your reservation, check out our menu packed with authentic, mouth-watering dishes.
