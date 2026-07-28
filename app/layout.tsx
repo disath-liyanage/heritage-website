@@ -108,7 +108,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.heritagefamilyrest.com/images/outdoor/front/jpeg",
+        url: "https://www.heritagefamilyrest.com/images/outdoor/Front.jpeg",
         alt: "Heritage Family Restaurant riverside view, Yatiyanthota",
       },
     ],
