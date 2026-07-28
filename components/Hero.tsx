@@ -1,151 +1,114 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { Alex_Brush } from "next/font/google";
+
+const alexBrush = Alex_Brush({ weight: "400", subsets: ["latin"] });
 
 type HeroProps = {
   imageSrc: string;
 };
 
 export default function Hero({ imageSrc }: HeroProps) {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [progress, setProgress] = useState(0);
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const desktopQuery = window.matchMedia("(min-width: 768px)");
-
-    const updateViewport = () => {
-      setIsDesktop(desktopQuery.matches);
-    };
-
-    updateViewport();
-    desktopQuery.addEventListener("change", updateViewport);
-
-    return () => {
-      desktopQuery.removeEventListener("change", updateViewport);
-    };
-  }, []);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let rafId: number | null = null;
-
-    const updateProgress = () => {
-      if (mediaQuery.matches || !isDesktop) {
-        setProgress(0);
-        return;
-      }
-
-      const section = sectionRef.current;
-      if (!section) return;
-
-      const rect = section.getBoundingClientRect();
-      const maxScroll = Math.max(section.offsetHeight - window.innerHeight, 1);
-      const currentScroll = Math.min(Math.max(-rect.top, 0), maxScroll);
-      setProgress(currentScroll / maxScroll);
-    };
-
-    const onScrollOrResize = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(() => {
-        updateProgress();
-        rafId = null;
-      });
-    };
-
-    updateProgress();
-    if (isDesktop) {
-      window.addEventListener("scroll", onScrollOrResize, { passive: true });
-      window.addEventListener("resize", onScrollOrResize);
-      mediaQuery.addEventListener("change", onScrollOrResize);
-    }
-
-    return () => {
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
-      mediaQuery.removeEventListener("change", onScrollOrResize);
-      if (rafId !== null) {
-        window.cancelAnimationFrame(rafId);
-      }
-    };
-  }, [isDesktop]);
-
-  const frameHeight = isDesktop ? `${44 + progress * 56}vh` : "38vh";
-  const frameWidth = isDesktop ? `${76 + progress * 24}vw` : "92vw";
-  const frameRadius = isDesktop ? `${Math.max(0, 26 - progress * 26)}px` : "20px";
-  const headingOpacity = isDesktop ? Math.max(0, 1 - progress * 1.5) : 1;
-  const headingTranslateY = isDesktop ? `${progress * 34}px` : "0px";
-  const overlayOpacity = isDesktop ? Math.max(0.2, 0.42 - progress * 0.18) : 0.34;
-
   return (
-    <section
-      ref={sectionRef}
-      className={`hero-scroll-root relative ${isDesktop ? "min-h-[210vh]" : "min-h-screen"}`}
-      aria-label="Hero section"
-    >
-      <div
-        className={`hero-scroll-stage flex items-center justify-center overflow-hidden bg-[#101913] ${
-          isDesktop ? "sticky top-0 h-screen" : "min-h-screen py-24"
-        }`}
-      >
-        <div className="hero-fade-in relative z-10 flex w-full flex-col items-center px-4 md:px-6">
-          <div
-            className="hero-image-frame relative overflow-hidden border border-white/20 shadow-[0_24px_90px_rgba(0,0,0,0.45)]"
-            style={{
-              width: frameWidth,
-              height: frameHeight,
-              borderRadius: frameRadius,
-            }}
-          >
-            <Image
-              src={imageSrc}
-              alt="Heritage Family Restaurant riverside view, Yatiyanthota"
-              fill
-              priority
-              className="object-cover"
-            />
-            <div
-              className="absolute inset-0 bg-black"
-              style={{ opacity: overlayOpacity }}
-              aria-hidden="true"
-            />
-          </div>
-
-          <div
-            className="mt-7 text-center text-[#F5F0E8]"
-            style={{
-              opacity: headingOpacity,
-              transform: `translateY(${headingTranslateY})`,
-            }}
-          >
-            <p className="mb-0 text-xs uppercase tracking-[0.25em] md:text-sm">
-              Thunkinda | Yatiyanthota
-            </p>
-            
-            <h1 className="font-body text-3xl font-bold leading-tight tracking-[0.01em] md:text-7xl">
-              <span className="blur-text-span delay-1">HERITAGE</span>{" "}
-              <span className="blur-text-span delay-2">FAMILY</span>{" "}
-              <span className="blur-text-span delay-3">RESTAURANT</span>
-            </h1>
-
-            <div className="mx-auto mt-5 flex w-full max-w-[360px] flex-nowrap items-center justify-center gap-2 md:mt-8 md:max-w-none md:gap-4">
-              <a
-                href="#contact"
-                className="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-full bg-[#C9A96E] px-2.5 py-2 text-[11px] font-medium text-[#1C2B1E] transition hover:bg-[#B89659] md:flex-none md:px-7 md:py-3 md:text-sm"
-              >
-                Reserve a table
-              </a>
-              <a
-                href="#treehouse"
-                className="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-full border border-[#F5F0E8] px-2.5 py-2 text-[11px] font-medium text-[#F5F0E8] transition hover:bg-[#F5F0E8] hover:text-[#1C2B1E] md:flex-none md:px-7 md:py-3 md:text-sm"
-              >
-                Explore the Tree House
-              </a>
-            </div>
-          </div>
-        </div>
+    <section className="relative flex min-h-screen flex-col overflow-hidden text-white">
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={imageSrc}
+          alt="Heritage Family Restaurant"
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent" />
       </div>
+
+      <div className="relative z-10 mx-auto flex flex-1 flex-col items-center justify-center pb-20 text-center leading-none">
+        <h1
+          className={`${alexBrush.className} mb-2 text-7xl font-bold text-[#be8040] md:text-8xl`}
+          style={{
+            animation: "fadeUp 0.5s forwards",
+            animationDelay: "0.3s",
+            opacity: 0,
+            transform: "translateY(40px)",
+          }}
+        >
+          Welcome
+        </h1>
+        
+        <h2
+          className="m-0 text-2xl font-bold uppercase tracking-[5px] md:text-4xl"
+          style={{
+            animation: "fadeScale 0.5s forwards",
+            opacity: 0,
+            transform: "scale(2)",
+          }}
+        >
+          Heritage Family Restaurant
+        </h2>
+        
+        <div className="animated-asterisk my-1 flex w-full max-w-[200px] items-center justify-center text-3xl font-bold text-[#be8040] md:max-w-[300px]">
+          <span
+            style={{
+              animation: "spin 0.5s forwards",
+              animationDelay: "0.3s",
+              opacity: 0,
+              transformOrigin: "center center",
+            }}
+          >
+            *
+          </span>
+        </div>
+        
+        <p
+          className="m-0 text-sm font-bold uppercase tracking-[3px]"
+          style={{
+            animation: "fadeDown 0.9s forwards",
+            animationDelay: "1.3s",
+            opacity: 0,
+            transform: "translateY(-40px)",
+          }}
+        >
+          Prepare to be amazed
+        </p>
+      </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .animated-asterisk::before, .animated-asterisk::after {
+          content: "";
+          display: inline-block;
+          height: 1px;
+          width: 0%;
+          opacity: 0;
+          background: white;
+          animation: growLine 0.5s forwards;
+          animation-delay: 0.8s;
+        }
+        .animated-asterisk::before { margin-right: 15px; }
+        .animated-asterisk::after { margin-left: 15px; }
+
+        @keyframes fadeUp {
+          0% { opacity: 0; transform: translateY(40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeScale {
+          0% { transform: scale(2); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeDown {
+          0% { opacity: 0; transform: translateY(-40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes growLine {
+          0% { opacity: 0; width: 0%; }
+          50% { opacity: 0.5; }
+          100% { opacity: 1; width: 40%; }
+        }
+        @keyframes spin {
+          0% { transform: rotate(0); opacity: 0; }
+          100% { transform: rotate(360deg); opacity: 1; }
+        }
+      `}} />
     </section>
   );
 }
