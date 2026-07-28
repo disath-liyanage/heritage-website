@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import GalleryPhotoExplorer from "@/components/GalleryPhotoExplorer";
 import Navbar from "@/components/Navbar";
-import getDiscoveredImages from "@/lib/getImageFiles";
 import { Suspense } from "react";
+import { createClient } from "@/lib/supabase/server";
+import { GalleryPhoto } from "@/lib/types/gallery";
 
 export const metadata: Metadata = {
   title: "Gallery | Heritage Family Restaurant & The Magical Tree House",
@@ -14,8 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GalleryPage() {
-  const images = getDiscoveredImages();
+export default async function GalleryPage() {
+  const supabase = await createClient();
+  
+  const { data: photos } = await supabase
+    .from("gallery_photos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const typedPhotos = (photos as GalleryPhoto[]) || [];
 
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
@@ -30,7 +38,7 @@ export default function GalleryPage() {
       </section>
 
       <Suspense fallback={<section className="mx-auto max-w-7xl px-6 pb-20 text-[#2A3A2D]/75">Loading gallery...</section>}>
-        <GalleryPhotoExplorer images={images} />
+        <GalleryPhotoExplorer photos={typedPhotos} />
       </Suspense>
 
       <Footer />

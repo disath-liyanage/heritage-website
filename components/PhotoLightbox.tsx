@@ -2,35 +2,18 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
+import { GalleryPhoto } from "@/lib/types/gallery";
 
 type PhotoLightboxProps = {
-  images: string[];
+  photos: GalleryPhoto[];
   selectedIndex: number;
   onBack: () => void;
   onPrev: () => void;
   onNext: () => void;
 };
 
-function getLightboxImageAlt(src: string) {
-  const path = src.toLowerCase();
-
-  if (path.includes("/images/treehouse/")) {
-    return "The Magical Tree House by Heritage Family Restaurant, Yatiyanthota";
-  }
-
-  if (path.includes("/images/outdoor/") || path.includes("river")) {
-    return "Kelani River view at Heritage Family Restaurant, Yatiyanthota";
-  }
-
-  if (path.includes("/images/food/") || path.includes("/images/menu/")) {
-    return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
-  }
-
-  return "Heritage Family Restaurant riverside view, Yatiyanthota";
-}
-
 export default function PhotoLightbox({
-  images,
+  photos,
   selectedIndex,
   onBack,
   onPrev,
@@ -38,25 +21,17 @@ export default function PhotoLightbox({
 }: PhotoLightboxProps) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onBack();
-      }
-      if (event.key === "ArrowLeft") {
-        onPrev();
-      }
-      if (event.key === "ArrowRight") {
-        onNext();
-      }
+      if (event.key === "Escape") onBack();
+      if (event.key === "ArrowLeft") onPrev();
+      if (event.key === "ArrowRight") onNext();
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onBack, onNext, onPrev]);
 
-  const currentSrc = images[selectedIndex];
-  if (!currentSrc) {
-    return null;
-  }
+  const currentPhoto = photos[selectedIndex];
+  if (!currentPhoto) return null;
 
   return (
     <div
@@ -101,7 +76,7 @@ export default function PhotoLightbox({
           <path d="M9 18l6-6-6-6" />
         </svg>
       </button>
-
+      
       <div className="relative h-full w-full p-6 pt-20 md:p-12 md:pt-20">
         <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-center">
           <div
@@ -109,8 +84,8 @@ export default function PhotoLightbox({
             onClick={(event) => event.stopPropagation()}
           >
             <Image
-              src={currentSrc}
-              alt={getLightboxImageAlt(currentSrc)}
+              src={currentPhoto.image_url}
+              alt={`Gallery photo - ${currentPhoto.category}`}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 1200px"
