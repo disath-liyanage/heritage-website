@@ -108,7 +108,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.heritagefamilyrest.com/images/Food/table2.jpeg", // Fixed the typo here from /jpeg to .jpeg
+        url: "https://www.heritagefamilyrest.com/images/outdoor/front/jpeg",
         alt: "Heritage Family Restaurant riverside view, Yatiyanthota",
       },
     ],
