@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function SplitExperienceSection() {
   return (
-    <section className="flex flex-col md:flex-row h-[70vh] min-h-[500px] w-full gap-2 bg-transparent">
+    <section className="flex flex-col md:flex-row h-[70vh] min-h-[500px] w-full gap-2 bg-transparent" id="treehouse">
       
       <Link
         href="/treehouse"
