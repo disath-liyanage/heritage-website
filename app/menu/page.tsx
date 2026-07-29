@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import MenuPhotoExplorer from "@/components/MenuPhotoExplorer";
 import Navbar from "@/components/Navbar";
-import getDiscoveredImages from "@/lib/getImageFiles";
 import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
+import { GalleryPhoto } from "@/lib/types/gallery";
 
 export const metadata: Metadata = {
   title: "Menu | Sri Lankan Cuisine — Heritage Family Restaurant, Yatiyanthota",
@@ -22,9 +22,6 @@ const currency = new Intl.NumberFormat("en-LK", {
 });
 
 export default async function MenuPage() {
-  const images = getDiscoveredImages();
-  const safeImages = Array.isArray(images) ? images : [];
-
   const supabase = await createClient();
 
   const { data: categories } = await supabase
@@ -39,6 +36,14 @@ export default async function MenuPage() {
       (item: { is_available: boolean }) => item.is_available
     ),
   }));
+
+  const { data: cuisinePhotos } = await supabase
+    .from("gallery_photos")
+    .select("*")
+    .ilike("category", "Cuisine")
+    .order("created_at", { ascending: false });
+
+  const typedPhotos = (cuisinePhotos as GalleryPhoto[]) || [];
 
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
@@ -88,7 +93,7 @@ export default async function MenuPage() {
       </section>
 
       <Suspense fallback={<section className="mx-auto max-w-7xl px-6 pb-20 text-[#2A3A2D]/75">Loading photos...</section>}>
-        <MenuPhotoExplorer images={safeImages} />
+        <MenuPhotoExplorer photos={typedPhotos} />
       </Suspense>
 
       <Footer />
