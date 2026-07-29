@@ -1,21 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { GalleryPhoto, GalleryCategory } from "@/lib/types/gallery";
 
+const CATEGORIES: { value: GalleryCategory; label: string }[] = [
+  { value: "outdoor", label: "Outdoor" },
+  { value: "treehouse", label: "Tree House" },
+  { value: "food", label: "Food" },
+  { value: "menu", label: "Menu" },
+];
+
 export default function AdminGalleryPage() {
   const supabase = createClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  
   const [file, setFile] = useState<File | null>(null);
-  const [category, setCategory] = useState<GalleryCategory>("outdoor");
+  const [preview, setPreview] = useState<string | null>(null);
+  const [category, setCategory] = useState<GalleryCategory | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetchPhotos();
-  }, []);
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   const fetchPhotos = async () => {
     setLoading(true);
@@ -30,9 +45,43 @@ export default function AdminGalleryPage() {
     setLoading(false);
   };
 
-  const handleUpload = async (e: React.FormEvent) => {
+  const handleFileSelect = (selectedFile: File) => {
+    if (!selectedFile.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+    setFile(selectedFile);
+    setPreview(URL.createObjectURL(selectedFile));
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    if (!file) return;
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  };
+
+  const clearSelection = () => {
+    setFile(null);
+    if (preview) URL.revokeObjectURL(preview);
+    setPreview(null);
+    setCategory(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleUpload = async () => {
+    if (!file || !category) return;
 
     setUploading(true);
     try {
@@ -44,7 +93,7 @@ export default function AdminGalleryPage() {
         .from("gallery")
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) throw new Error(`Storage Error: ${uploadError.message}`);
 
       const { data: publicUrlData } = supabase.storage
         .from("gallery")
@@ -58,14 +107,14 @@ export default function AdminGalleryPage() {
           category: category,
         });
 
-      if (dbError) throw dbError;
+      if (dbError) throw new Error(`Database Error: ${dbError.message}`);
 
-      setFile(null);
-      (document.getElementById("file-upload") as HTMLInputElement).value = "";
+      clearSelection();
       fetchPhotos();
-    } catch (error) {
-      console.error("Error uploading photo:", error);
-      alert("Failed to upload photo. Check console for details.");
+    } catch (error: any) {
+      const message = error?.message || String(error);
+      console.error("Upload Error Details:", message);
+      alert(`Failed to upload photo: ${message}`);
     } finally {
       setUploading(false);
     }
@@ -79,88 +128,146 @@ export default function AdminGalleryPage() {
         .from("gallery")
         .remove([storagePath]);
 
-      if (storageError) throw storageError;
+      if (storageError) throw new Error(`Storage Error: ${storageError.message}`);
 
       const { error: dbError } = await supabase
         .from("gallery_photos")
         .delete()
         .eq("id", id);
 
-      if (dbError) throw dbError;
+      if (dbError) throw new Error(`Database Error: ${dbError.message}`);
 
       setPhotos((prev) => prev.filter((p) => p.id !== id));
-    } catch (error) {
-      console.error("Error deleting photo:", error);
-      alert("Failed to delete photo.");
+    } catch (error: any) {
+      const message = error?.message || String(error);
+      console.error("Error deleting photo:", message);
+      alert(`Failed to delete photo: ${message}`);
     }
   };
 
   return (
-    <main className="min-h-screen bg-[#F5F0E8] p-8 text-[#1F2A20]">
+    <main className="min-h-screen bg-[#F5F0E8] p-6 text-[#1F2A20] md:p-12">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-8 text-3xl font-bold">Manage Gallery Photos</h1>
+        <header className="mb-10">
+          <h1 className="font-display text-4xl text-[#1F2D21]">Gallery Admin</h1>
+          <p className="mt-2 text-[#2A3A2D]/75">Upload and manage photos for the public gallery.</p>
+        </header>
 
-        <form onSubmit={handleUpload} className="mb-12 rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-xl font-semibold">Upload New Photo</h2>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-            <div className="flex-1">
-              <label className="mb-1 block text-sm font-medium">Select Image</label>
+        <section className="mb-16 rounded-2xl border border-[#E5DFD3] bg-white p-6 shadow-sm">
+          <h2 className="mb-6 text-xl font-semibold text-[#1F2D21]">Add New Photo</h2>
+          
+          {!preview ? (
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`group relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-12 transition-colors ${
+                isDragging
+                  ? "border-[#2D3F2B] bg-[#2D3F2B]/5"
+                  : "border-[#CBBDA7] bg-[#FAFAF8] hover:border-[#2D3F2B] hover:bg-[#F5F0E8]"
+              }`}
+            >
+              <svg className="mb-4 h-10 w-10 text-[#6A5A43] transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              <p className="text-center font-medium text-[#2A3A2D]">Click to upload or drag and drop</p>
+              <p className="mt-1 text-xs text-[#6A5A43]">PNG, JPG, WEBP, or AVIF</p>
               <input
-                id="file-upload"
                 type="file"
+                ref={fileInputRef}
+                onChange={(e) => {
+                  if (e.target.files?.[0]) handleFileSelect(e.target.files[0]);
+                }}
                 accept="image/png, image/jpeg, image/webp, image/avif"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                className="w-full rounded-md border p-2"
-                required
+                className="hidden"
               />
             </div>
-            <div className="w-full sm:w-48">
-              <label className="mb-1 block text-sm font-medium">Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value as GalleryCategory)}
-                className="w-full rounded-md border p-2 bg-white"
-              >
-                <option value="outdoor">Outdoor</option>
-                <option value="treehouse">Tree House</option>
-                <option value="food">Food</option>
-                <option value="menu">Menu</option>
-              </select>
-            </div>
-            <button
-              type="submit"
-              disabled={!file || uploading}
-              className="rounded-md bg-[#2D3F2B] px-6 py-2 text-white transition hover:bg-[#1F2D21] disabled:opacity-50"
-            >
-              {uploading ? "Uploading..." : "Upload"}
-            </button>
-          </div>
-        </form>
-
-        <div>
-          <h2 className="mb-4 text-xl font-semibold">Current Photos</h2>
-          {loading ? (
-            <p>Loading photos...</p>
-          ) : photos.length === 0 ? (
-            <p className="text-gray-500">No photos found. Upload some above.</p>
           ) : (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            <div className="flex flex-col gap-8 md:flex-row md:items-start">
+              <div className="relative aspect-4/3 w-full shrink-0 max-w-sm overflow-hidden rounded-xl border border-[#E5DFD3] bg-gray-100">
+                <Image src={preview} alt="Upload preview" fill className="object-cover" />
+                <button
+                  onClick={clearSelection}
+                  className="absolute right-3 top-3 rounded-full bg-black/60 p-2 text-white backdrop-blur-md transition hover:bg-red-600"
+                  title="Remove image"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex flex-1 flex-col">
+                <label className="mb-3 block text-sm font-semibold text-[#1F2D21]">Select a Tag</label>
+                <div className="flex flex-wrap gap-3">
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.value}
+                      onClick={() => setCategory(cat.value)}
+                      className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${
+                        category === cat.value
+                          ? "border-[#2D3F2B] bg-[#2D3F2B] text-[#F5F0E8] shadow-md"
+                          : "border-[#CBBDA7] bg-[#FFF9F0] text-[#2D3F2B] hover:border-[#2D3F2B]"
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-auto pt-8">
+                  <button
+                    onClick={handleUpload}
+                    disabled={!category || uploading}
+                    className="w-full rounded-lg bg-[#2D3F2B] px-6 py-3 font-semibold text-white transition hover:bg-[#1F2D21] disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
+                  >
+                    {uploading ? "Uploading to Gallery..." : "Upload Photo"}
+                  </button>
+                  {!category && (
+                    <p className="mt-2 text-sm text-amber-600">Please select a tag to continue.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+
+        <section>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-[#1F2D21]">Live Photos</h2>
+            <span className="rounded-full bg-[#E5DFD3] px-3 py-1 text-xs font-semibold text-[#2A3A2D]">
+              {photos.length} total
+            </span>
+          </div>
+
+          {loading ? (
+            <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-[#CBBDA7]">
+              <p className="text-[#6A5A43]">Loading photos...</p>
+            </div>
+          ) : photos.length === 0 ? (
+            <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-[#CBBDA7]">
+              <p className="text-[#6A5A43]">No photos in the gallery yet.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:gap-6 lg:grid-cols-4">
               {photos.map((photo) => (
-                <div key={photo.id} className="group relative aspect-4/3 overflow-hidden rounded-lg border bg-gray-100">
+                <div key={photo.id} className="group relative aspect-4/3 overflow-hidden rounded-xl border border-[#E5DFD3] bg-gray-100 shadow-sm">
                   <Image
                     src={photo.image_url}
                     alt={photo.category}
                     fill
-                    className="object-cover"
+                    className="object-cover transition duration-300 group-hover:scale-105"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 transition group-hover:opacity-100 flex flex-col items-center justify-center gap-2">
-                    <span className="rounded bg-white/90 px-2 py-1 text-xs font-semibold uppercase">
+                  
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#1F2A20]/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
+                    <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#1F2D21]">
                       {photo.category}
                     </span>
                     <button
                       onClick={() => handleDelete(photo.id, photo.storage_path)}
-                      className="rounded bg-red-600 px-3 py-1 text-sm font-bold text-white hover:bg-red-700"
+                      className="rounded-full bg-red-600 px-4 py-1.5 text-sm font-bold text-white shadow-md transition hover:scale-105 hover:bg-red-700"
                     >
                       Delete
                     </button>
@@ -169,7 +276,7 @@ export default function AdminGalleryPage() {
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </main>
   );
