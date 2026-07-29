@@ -26,7 +26,7 @@ function walkImages(dir: string, relative = ""): string[] {
       continue;
     }
 
-    if (entry.name.toLowerCase() === "logo.jpeg") {
+    if (entry.name.toLowerCase() === "logo.png") {
       continue;
     }
 
