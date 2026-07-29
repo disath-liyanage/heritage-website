@@ -21,7 +21,7 @@ const restaurantSchema = {
   name: "Heritage Family Restaurant",
   url: siteUrl,
   logo: "https://www.heritagefamilyrest.com/images/logo.png",
-  image: "https://www.heritagefamilyrest.com/images/banner.ong",
+  image: "https://www.heritagefamilyrest.com/images/banner.png",
   description:
     "Heritage Family Restaurant is a riverside dining experience located beside the Kelani River in Thunkinda, Yatiyanthota, near Kithulgala, Sri Lanka. Featuring The Magical Tree House for a unique treetop dining experience.",
   address: {
@@ -131,6 +131,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-body">
