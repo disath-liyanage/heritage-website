@@ -39,7 +39,7 @@ export default function SplitExperienceSection() {
       >
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/images/food/table.jpeg" 
+            src="/images/treehouse/table.jpeg" 
             alt="View Our Menu"
             fill
             className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110 group-hover:-translate-x-8"
