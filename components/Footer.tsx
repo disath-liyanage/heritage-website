@@ -19,7 +19,7 @@ export default function Footer() {
             
             <div className="footer-column">
               <Image
-                src="/images/logo.jpeg"
+                src="/images/logo.png"
                 alt="Heritage Family Restaurant logo"
                 width={160}
                 height={48}
