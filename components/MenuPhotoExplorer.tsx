@@ -77,9 +77,6 @@ export default function MenuPhotoExplorer({ images }: MenuPhotoExplorerProps) {
     <>
       <section className="mx-auto max-w-7xl px-6 pb-20">
         <h2 className="font-display text-3xl text-[#1F2D21] md:text-4xl">Photo Highlights</h2>
-        <p className="mt-2 text-sm text-[#2A3A2D]/75">
-          Tap a food photo to open it in the full gallery viewer.
-        </p>
 
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {sessionOrderedMenuImages.slice(0, 10).map((src, index) => (

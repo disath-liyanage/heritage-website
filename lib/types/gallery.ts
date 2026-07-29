@@ -4,6 +4,6 @@ export type GalleryPhoto = {
   id: string;
   image_url: string;
   storage_path: string;
-  category: GalleryCategory;
+  category: string;
   created_at: string;
 };
