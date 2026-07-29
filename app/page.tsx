@@ -11,7 +11,7 @@ import { GalleryPhoto } from "@/lib/types/gallery";
 
 export default async function Page() {
   const images = getDiscoveredImages();
-  const preferredHeroImage = "/images/outdoor/Front.jpeg";
+  const preferredHeroImage = "/images/Front.jpeg";
   const heroImage = images.includes(preferredHeroImage)
     ? preferredHeroImage
     : images[0];
