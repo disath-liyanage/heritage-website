@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaMapMarkerAlt } from "react-icons/fa";
 import { SiAirbnb, SiBookingdotcom, SiTripadvisor } from "react-icons/si";
 import './footer-style.css';
 
@@ -15,45 +15,45 @@ export default function Footer() {
         </svg>
         
         <div className="footer-content">
-          <div className="footer-content-grid">
+          <div className="footer-content-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl mx-auto">
             
-            <div className="footer-column">
+            <div className="footer-column flex flex-col items-center text-center">
               <Image
-                src="/images/logo.png"
+                src="/images/logo-ft.png"
                 alt="Heritage Family Restaurant logo"
                 width={160}
                 height={48}
-                className="h-12 w-auto object-contain bg-white/10 p-1 rounded"
               />
-              <p className="footer-description mt-4">
-                Heritage Family Restaurant - A riverside dining experience by the Kelani River, Thunkinda, Yatiyanthota.
-              </p>
+              <div className="footer-description mt-4">
+                A Riverside Dining Experience
+              </div>
             </div>
 
-            <div className="footer-column">
+            <div className="footer-column flex flex-col items-center text-center">
               <h2 className="footer-menu-name">Quick Links</h2>
-              <ul className="footer-menu-list">
+              <ul className="footer-menu-list flex flex-col items-center">
                 <li><Link href="/menu">Menu</Link></li>
                 <li><Link href="/treehouse">The Magical Tree House</Link></li>
                 <li><Link href="/gallery">Gallery</Link></li>
               </ul>
             </div>
 
-            <div className="footer-column">
+            <div className="footer-column flex flex-col items-center text-center">
               <h2 className="footer-menu-name">The Magical Tree House</h2>
-              <p className="footer-description">
+              <p className="footer-description-2">
                 Experience dining in the treetops overlooking the Kelani River. A unique adventure for the whole family.
               </p>
             </div>
 
-            <div className="footer-column">
+            <div className="footer-column flex flex-col items-center text-center">
               <h2 className="footer-menu-name">Contact</h2>
-              <ul className="footer-menu-list">
-                <li>Thunkinda, Yatiyanthota, near Kithulgala</li>
+              <ul className="footer-menu-list flex flex-col items-center">
+                <li>Thunkinda, Yatiyanthota</li>
                 <li><a href="tel:+94716939224">+94 71 693 9224</a></li>
                 <li><a href="mailto:info@heritagefamilyrest.com">info@heritagefamilyrest.com</a></li>
-                <li className="mt-2">
-                  <a href="https://maps.app.goo.gl/zEpzmFWGpsow7ZhH6" target="_blank" rel="noreferrer" className="underline underline-offset-4 font-bold text-white">
+                <li className="mt-4">
+                  <a href="https://maps.app.goo.gl/zEpzmFWGpsow7ZhH6" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 underline underline-offset-4 font-bold text-white hover:text-gray-300 transition-colors">
+                    <FaMapMarkerAlt />
                     Get Directions
                   </a>
                 </li>
@@ -62,7 +62,7 @@ export default function Footer() {
 
           </div>
 
-          <div className="footer-social-container">
+          <div className="footer-social-container mt-8">
             <a href="https://web.facebook.com/Heritage.Family.Restaurant" target="_blank" rel="noreferrer" aria-label="Facebook" className="footer-social-link">
               <FaFacebookF size={22} />
             </a>
