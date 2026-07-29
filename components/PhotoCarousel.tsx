@@ -37,7 +37,6 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
   return (
     <section id="gallery" className="bg-[#F5F0E8] py-20" aria-label="Gallery section">
       <div className="mx-auto mb-10 max-w-7xl px-6">
-        <p className="text-xs uppercase tracking-[0.25em] text-[#6A5A43]">Life at Heritage</p>
         <h2 className="mt-2 font-display text-4xl text-[#1F2D21] md:text-5xl">
           A glimpse of our riverside home
         </h2>
