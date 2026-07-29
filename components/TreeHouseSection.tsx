@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
+import getDiscoveredImages from "@/lib/getImageFiles";
 
 export default function SplitExperienceSection() {
+  const images = getDiscoveredImages();
+  
+  const bedImage = images.find((src) => src.includes("bed")) ?? "/images/treehouse/bed.jpeg";
+  const tableImage = images.find((src) => src.includes("table")) ?? "/images/treehouse/table.jpeg";
+
   return (
     <section className="flex flex-col md:flex-row h-[70vh] min-h-[500px] w-full gap-2 bg-transparent" id="treehouse">
       
@@ -12,7 +18,7 @@ export default function SplitExperienceSection() {
       >
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/images/treehouse/bed.jpeg"
+            src={bedImage}
             alt="Explore the Tree House"
             fill
             className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110 group-hover:translate-x-8"
@@ -26,7 +32,7 @@ export default function SplitExperienceSection() {
           <h2 className="font-display text-4xl font-bold text-white md:text-5xl tracking-wide">
             Explore Tree House
           </h2>
-          <span className="mt-6 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 px-8 py-3 text-sm font-semibold text-white transition-all duration-300 group-hover:bg-white group-hover:text-black">
+          <span className="mt-6 rounded-full bg-white/25 backdrop-blur-md border border-white/40 px-8 py-3 text-sm font-semibold text-white transition-all duration-300 group-hover:bg-white group-hover:text-black">
             Visit the Tree House
           </span>
         </div>
@@ -39,7 +45,7 @@ export default function SplitExperienceSection() {
       >
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/images/treehouse/table.jpeg" 
+            src={tableImage} 
             alt="View Our Menu"
             fill
             className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110 group-hover:-translate-x-8"
