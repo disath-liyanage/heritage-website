@@ -2,73 +2,62 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { GalleryPhoto } from "@/lib/types/gallery";
 
 type MenuPhotoExplorerProps = {
-  images: string[];
+  photos: GalleryPhoto[];
 };
 
-function getMenuImageAlt(src: string) {
-  const path = src.toLowerCase();
-
-  if (path.includes("/images/food/") || path.includes("/images/menu/")) {
-    return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
-  }
-
-  return "Heritage Family Restaurant riverside view, Yatiyanthota";
-}
-
-export default function MenuPhotoExplorer({ images }: MenuPhotoExplorerProps) {
+export default function MenuPhotoExplorer({ photos }: MenuPhotoExplorerProps) {
   const router = useRouter();
-  const menuImages = useMemo(() => {
-    return images.filter((src) => {
-      const normalized = src.toLowerCase();
-      return normalized.includes("/images/food/") || normalized.includes("/images/menu/");
-    });
-  }, [images]);
-  const [sessionOrderedMenuImages, setSessionOrderedMenuImages] = useState<string[]>(menuImages);
+  
+  const [sessionOrderedMenuPhotos, setSessionOrderedMenuPhotos] = useState<GalleryPhoto[]>(photos);
 
   useEffect(() => {
-    if (!menuImages.length) {
-      setSessionOrderedMenuImages([]);
+    if (!photos.length) {
+      setSessionOrderedMenuPhotos([]);
       return;
     }
 
-    const storageKey = "heritage:menu-food-order:v1";
+    const storageKey = "heritage:menu-food-order:v2"; 
 
     try {
       const stored = sessionStorage.getItem(storageKey);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          const seen = new Set(menuImages);
-          const persisted = parsed.filter((src): src is string => typeof src === "string" && seen.has(src));
-          const missing = menuImages.filter((src) => !persisted.includes(src));
+        const parsedIds = JSON.parse(stored);
+        if (Array.isArray(parsedIds)) {
+          const persisted = parsedIds
+            .map((id) => photos.find((p) => p.id === id))
+            .filter((p): p is GalleryPhoto => p !== undefined);
+            
+          const missing = photos.filter((p) => !parsedIds.includes(p.id));
           const merged = [...persisted, ...missing];
 
-          if (merged.length === menuImages.length) {
-            setSessionOrderedMenuImages(merged);
+          if (merged.length === photos.length) {
+            setSessionOrderedMenuPhotos(merged);
             return;
           }
         }
       }
 
-      const shuffled = [...menuImages];
+      const shuffled = [...photos];
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
 
-      sessionStorage.setItem(storageKey, JSON.stringify(shuffled));
-      setSessionOrderedMenuImages(shuffled);
+      sessionStorage.setItem(storageKey, JSON.stringify(shuffled.map((p) => p.id)));
+      setSessionOrderedMenuPhotos(shuffled);
     } catch {
-      setSessionOrderedMenuImages(menuImages);
+      setSessionOrderedMenuPhotos(photos);
     }
-  }, [menuImages]);
+  }, [photos]);
 
   const openInGallery = useCallback(
-    (src: string) => {
-      router.push(`/gallery?photo=${encodeURIComponent(src)}`);
+    (id: string) => {
+      // Pass the database ID instead of the string path
+      router.push(`/gallery?photo=${id}`);
     },
     [router],
   );
@@ -79,17 +68,17 @@ export default function MenuPhotoExplorer({ images }: MenuPhotoExplorerProps) {
         <h2 className="font-display text-3xl text-[#1F2D21] md:text-4xl">Photo Highlights</h2>
 
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {sessionOrderedMenuImages.slice(0, 10).map((src, index) => (
+          {sessionOrderedMenuPhotos.slice(0, 10).map((photo, index) => (
             <button
-              key={src}
+              key={photo.id}
               type="button"
-              onClick={() => openInGallery(src)}
+              onClick={() => openInGallery(photo.id)}
               aria-label={`Open food photo ${index + 1} in gallery`}
               className="group relative aspect-4/3 overflow-hidden rounded-lg text-left"
             >
               <Image
-                src={src}
-                alt={getMenuImageAlt(src)}
+                src={photo.image_url}
+                alt="Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota"
                 fill
                 className="object-cover transition duration-500 group-hover:scale-105"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -98,7 +87,7 @@ export default function MenuPhotoExplorer({ images }: MenuPhotoExplorerProps) {
           ))}
         </div>
 
-        {!menuImages.length ? (
+        {!photos.length ? (
           <p className="mt-4 text-sm text-[#2A3A2D]/70">No food photos available yet.</p>
         ) : null}
       </section>
