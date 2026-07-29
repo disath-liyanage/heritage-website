@@ -20,7 +20,7 @@ const restaurantSchema = {
   name: "Heritage Family Restaurant",
   url: siteUrl,
   logo: "https://www.heritagefamilyrest.com/images/logo.jpeg",
-  image: "https://www.heritagefamilyrest.com/images/outdoor/front.jpeg",
+  image: "https://www.heritagefamilyrest.com/images/banner.ong",
   description:
     "Heritage Family Restaurant is a riverside dining experience located beside the Kelani River in Thunkinda, Yatiyanthota, near Kithulgala, Sri Lanka. Featuring The Magical Tree House for a unique treetop dining experience.",
   address: {
@@ -61,7 +61,7 @@ const treeHouseAttractionSchema = {
   url: "https://www.heritagefamilyrest.com/treehouse",
   description:
     "The Magical Tree House is a unique treetop dining experience perched above the Kelani River in the lush forests of Yatiyanthota, near Kithulgala, Sri Lanka. Perfect for families, couples, and nature lovers.",
-  image: "https://www.heritagefamilyrest.com/images/outdoor/outside.jpeg",
+  image: "https://www.heritagefamilyrest.com/images/banner.png",
   address: {
     "@type": "PostalAddress",
     streetAddress: "Thunkinda",
@@ -108,7 +108,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.heritagefamilyrest.com/images/outdoor/Front.jpeg",
+        url: "https://www.heritagefamilyrest.com/images/banner.png",
         alt: "Heritage Family Restaurant riverside view, Yatiyanthota",
       },
     ],
