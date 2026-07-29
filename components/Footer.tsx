@@ -51,7 +51,7 @@ export default function Footer() {
               <ul className="footer-menu-list">
                 <li>Thunkinda, Yatiyanthota, near Kithulgala</li>
                 <li><a href="tel:+94716939224">+94 71 693 9224</a></li>
-                <li><a href="mailto:magicaltreehouse2024@gmail.com">magicaltreehouse2024@gmail.com</a></li>
+                <li><a href="mailto:info@heritagefamilyrest.com">info@heritagefamilyrest.com</a></li>
                 <li className="mt-2">
                   <a href="https://maps.app.goo.gl/zEpzmFWGpsow7ZhH6" target="_blank" rel="noreferrer" className="underline underline-offset-4 font-bold text-white">
                     Get Directions
