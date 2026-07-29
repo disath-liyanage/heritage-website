@@ -10,16 +10,15 @@ type GalleryPhotoExplorerProps = {
   photos: GalleryPhoto[];
 };
 
-type UIFilter = "all" | "outdoor" | "treehouse" | "cuisine";
-
 function getGalleryImageAlt(category: string) {
-  switch (category) {
+  switch (category?.toLowerCase()) {
     case "treehouse":
       return "The Magical Tree House by Heritage Family Restaurant, Yatiyanthota";
     case "outdoor":
       return "Kelani River view at Heritage Family Restaurant, Yatiyanthota";
     case "food":
     case "menu":
+    case "cuisine":
       return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
     default:
       return "Heritage Family Restaurant riverside view, Yatiyanthota";
@@ -30,8 +29,13 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeFilter, setActiveFilter] = useState<UIFilter>("all");
+  const [activeFilter, setActiveFilter] = useState<string>("all");
   const [sessionOrderedPhotos, setSessionOrderedPhotos] = useState<GalleryPhoto[]>(photos);
+
+  const uniqueCategories = useMemo(() => {
+    const categories = new Set(photos.map((p) => p.category).filter(Boolean));
+    return Array.from(categories).sort();
+  }, [photos]);
 
   useEffect(() => {
     if (!photos.length) {
@@ -74,16 +78,10 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
   }, [photos]);
 
   const filteredPhotos = useMemo(() => {
-    if (activeFilter === "outdoor") {
-      return sessionOrderedPhotos.filter((p) => p.category === "outdoor");
+    if (activeFilter === "all") {
+      return sessionOrderedPhotos;
     }
-    if (activeFilter === "treehouse") {
-      return sessionOrderedPhotos.filter((p) => p.category === "treehouse");
-    }
-    if (activeFilter === "cuisine") {
-      return sessionOrderedPhotos.filter((p) => p.category === "food" || p.category === "menu");
-    }
-    return sessionOrderedPhotos;
+    return sessionOrderedPhotos.filter((p) => p.category === activeFilter);
   }, [activeFilter, sessionOrderedPhotos]);
 
   const selectedPhotoId = searchParams.get("photo");
@@ -124,7 +122,7 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
     replaceQueryWithPhoto(filteredPhotos[nextIndex].id);
   }, [filteredPhotos, replaceQueryWithPhoto, selectedIndex]);
 
-  const setFilter = useCallback((filter: UIFilter) => {
+  const setFilter = useCallback((filter: string) => {
     setActiveFilter(filter);
     replaceQueryWithPhoto(null);
   }, [replaceQueryWithPhoto]);
@@ -132,9 +130,20 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
   return (
     <>
       <div className="mx-auto mb-8 flex max-w-7xl flex-wrap gap-3 px-6">
-        <button type="button" onClick={() => setFilter("outdoor")} className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${activeFilter === "outdoor" ? "border-[#2D3F2B] bg-[#2D3F2B] text-[#F5F0E8]" : "border-[#CBBDA7] bg-[#FFF9F0] text-[#2D3F2B] hover:border-[#2D3F2B]"}`}>Outdoor</button>
-        <button type="button" onClick={() => setFilter("treehouse")} className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${activeFilter === "treehouse" ? "border-[#2D3F2B] bg-[#2D3F2B] text-[#F5F0E8]" : "border-[#CBBDA7] bg-[#FFF9F0] text-[#2D3F2B] hover:border-[#2D3F2B]"}`}>Tree House</button>
-        <button type="button" onClick={() => setFilter("cuisine")} className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${activeFilter === "cuisine" ? "border-[#2D3F2B] bg-[#2D3F2B] text-[#F5F0E8]" : "border-[#CBBDA7] bg-[#FFF9F0] text-[#2D3F2B] hover:border-[#2D3F2B]"}`}>Cuisine</button>
+        {uniqueCategories.map((category) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => setFilter(category)}
+            className={`rounded-full border px-5 py-2 text-sm font-semibold capitalize transition ${
+              activeFilter === category
+                ? "border-[#2D3F2B] bg-[#2D3F2B] text-[#F5F0E8]"
+                : "border-[#CBBDA7] bg-[#FFF9F0] text-[#2D3F2B] hover:border-[#2D3F2B]"
+            }`}
+          >
+            {category.replace(/-/g, " ")}
+          </button>
+        ))}
         {activeFilter !== "all" && (
           <button type="button" onClick={() => setFilter("all")} className="inline-flex items-center gap-2 rounded-full border border-[#CBBDA7] bg-[#FFF9F0] px-5 py-2 text-sm font-semibold text-[#2D3F2B] transition hover:border-[#2D3F2B]">Clear</button>
         )}
