@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 export default function TreeHousePage() {
   const images = getDiscoveredImages();
   
-  const natureImage = images.find((src) => src.includes("outside")) ?? "/images/outdoor/outside.jpeg";
-  const riverImage = images.find((src) => src.includes("river")) ?? "/images/outdoor/river.jpeg";
+  const natureImage = images.find((src) => src.includes("outside")) ?? "/images/treehouse/outside.jpeg";
+  const riverImage = images.find((src) => src.includes("river")) ?? "/images/treehouse/river.jpeg";
   const insideImage = images.find((src) => src.includes("bed") || src.includes("inside")) ?? "/images/treehouse/bed.jpeg";
 
   return (
