@@ -28,7 +28,6 @@ export default function TreeHousePage() {
       <Navbar />
       
       <section className="mx-auto max-w-7xl px-6 pb-12 pt-36 text-center" id="treepage">
-        <p className="text-xs uppercase tracking-[0.25em] text-[#6A5A43]">Our Signature Experience</p>
         <h1 className="mt-4 font-display text-5xl text-[#1F2D21] md:text-6xl max-w-4xl mx-auto">
           The Magical Tree House
         </h1>

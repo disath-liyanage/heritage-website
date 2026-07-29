@@ -105,7 +105,7 @@ export default function MapSection() {
   return (
     <section id="find" className="bg-[#F5F0E8] pt-20" aria-label="Location section">
       <div className="mx-auto max-w-7xl px-6">
-        <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl">Find us on Google Maps</h2>
+        <h2 className="font-display text-4xl text-[#1C2B1E] md:text-5xl text-center">Find us on Google Maps</h2>
 
         <div className="mt-8 overflow-hidden rounded-3xl border border-[#DDCFB9] bg-[#EDE5D8]">
           {!mapsApiKey ? (
@@ -118,7 +118,7 @@ export default function MapSection() {
         </div>
 
         <div className="mx-auto max-w-4xl pt-16 text-center">
-          <h2 className="text-2xl font-display text-[#1F2D21] mb-8">Reserve Your Stay</h2>
+          <h2 className="text-4xl font-display text-[#1F2D21] mb-8">Reserve Your Stay</h2>
           
           <div className="flex flex-wrap justify-center gap-4 mb-10">
             <a href="https://www.booking.com/hotel/lk/the-magical-tree-house.en-gb.html" target="_blank" rel="noreferrer" className="group flex items-center gap-2 bg-[#003B95] px-6 py-3 rounded-full text-white hover:bg-[#002b6e] transition-all text-sm font-bold tracking-wide shadow-md hover:shadow-lg hover:-translate-y-0.5">
