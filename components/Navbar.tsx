@@ -26,22 +26,26 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       setIsScrolled(window.scrollY > 50);
-      
+
       if (window.scrollY < 200) {
         setActiveSection("home");
       }
     };
 
     onScroll();
+
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
     if (!isHomePage) return;
 
     const sections = links
-      .map((l) => document.getElementById(l.id))
+      .map((link) => document.getElementById(link.id))
       .filter((section): section is HTMLElement => section !== null);
 
     if (!sections.length) return;
@@ -54,35 +58,42 @@ export default function Navbar() {
           }
         });
       },
-      { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
+      {
+        rootMargin: "-20% 0px -60% 0px",
+        threshold: 0,
+      }
     );
 
-    sections.forEach((s) => observer.observe(s));
+    sections.forEach((section) => observer.observe(section));
+
     return () => observer.disconnect();
   }, [isHomePage]);
 
   return (
     <header
-      style={{ fontFamily: "'Google Sans', var(--font-body), sans-serif" }}
+      style={{
+        fontFamily: "'Google Sans', var(--font-body), sans-serif",
+      }}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-400 ${
         showBackground
-          ? "bg-[#f5f0e8]/40 backdrop-blur-[20px] backdrop-saturate-[140%] border-b border-[#d8ccb8]/30 shadow-sm"
-          : "bg-transparent pointer-events-none"
+          ? "border-b border-[#d8ccb8]/30 bg-[#f5f0e8]/40 shadow-sm backdrop-blur-[20px] backdrop-saturate-[140%]"
+          : "bg-transparent"
       }`}
     >
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 transition-all duration-300 pointer-events-auto"
+        className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 transition-all duration-300"
         aria-label="Main navigation"
       >
-        <Link href={isHomePage ? "/#home" : "/"} aria-label="Heritage Family Restaurant home">
+        <Link
+          href={isHomePage ? "/#home" : "/"}
+          aria-label="Heritage Family Restaurant home"
+        >
           <Image
-            src="/images/logo.jpeg"
+            src="/images/logo-tr.png"
             alt="Heritage Family Restaurant logo"
             width={160}
             height={48}
-            className={`h-12 w-auto object-contain transition-all duration-300 ${
-              !showBackground ? "mix-blend-difference" : ""
-            }`}
+            className="h-12 w-auto object-contain"
             priority
           />
         </Link>
@@ -91,35 +102,34 @@ export default function Navbar() {
           {links.map((link) => {
             if (link.id === "home" && !showHomeLink) return null;
 
-            const isActive = isHomePage && activeSection === link.id;
+            const isActive =
+              isHomePage && activeSection === link.id;
 
             return (
               <Link
                 key={link.id}
                 href={link.href}
-                className={`relative text-sm whitespace-nowrap transition-all duration-300 px-1 py-1 ${
+                className={`relative whitespace-nowrap px-1 py-1 text-sm transition-all duration-300 ${
                   showBackground
-                    ?
-                      isActive
-                        ? "text-[#1f2a20] font-bold after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-[2px] after:h-[2px] after:bg-[#1f2a20]"
-                        : "text-[#1f2a20] font-semibold hover:font-bold"
-                    :
-                      isActive
-                        ? "text-white mix-blend-difference font-bold after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-[2px] after:h-[2px] after:bg-white"
-                        : "text-white mix-blend-difference font-semibold hover:font-bold"
+                    ? isActive
+                      ? "font-bold text-[#1f2a20] after:absolute after:-bottom-[2px] after:left-0 after:right-0 after:h-[2px] after:bg-[#1f2a20] after:content-['']"
+                      : "font-semibold text-[#1f2a20] hover:font-bold"
+                    : isActive
+                      ? "font-bold text-white after:absolute after:-bottom-[2px] after:left-0 after:right-0 after:h-[2px] after:bg-white after:content-['']"
+                      : "font-semibold text-white hover:font-bold"
                 }`}
               >
                 {link.label}
               </Link>
             );
           })}
-          
+
           <Link
             href="/treehouse/#reserve"
-            className={`rounded-full border px-5 py-2 text-sm font-semibold transition-all shadow-sm ${
+            className={`rounded-full border px-5 py-2 text-sm transition-all shadow-sm ${
               showBackground
-                ? "border-[#1f2a20] text-[#1f2a20] hover:bg-[#1f2a20] hover:text-[#f5f0e8]"
-                : "border-white text-white mix-blend-difference hover:bg-white hover:text-black hover:mix-blend-normal"
+                ? "border-[#007848] bg-[#007848] font-bold text-white hover:bg-[#005f39]"
+                : "border-white bg-transparent font-semibold text-white hover:bg-white hover:text-[#007848]"
             }`}
           >
             Reserve a Stay
@@ -128,42 +138,58 @@ export default function Navbar() {
 
         <button
           type="button"
-          className={`inline-flex h-10 w-10 items-center justify-center rounded md:hidden transition-colors ${
+          className={`inline-flex h-10 w-10 items-center justify-center rounded transition-colors md:hidden ${
             showBackground
               ? "text-[#1f2a20] hover:bg-[#1f2a20]/10"
-              : "text-white mix-blend-difference hover:bg-white/20"
+              : "text-white hover:bg-white/20"
           }`}
           onClick={() => setIsOpen((prev) => !prev)}
           aria-expanded={isOpen}
           aria-label="Toggle menu"
         >
           <span className="sr-only">Menu</span>
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2">
+
+          <svg
+            viewBox="0 0 24 24"
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             {isOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 6l12 12M18 6L6 18"
+              />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18M3 18h18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 6h18M3 12h18M3 18h18"
+              />
             )}
           </svg>
         </button>
       </nav>
 
       {isOpen ? (
-        <div className="border-t border-[#d8ccb8]/30 bg-[#f5f0e8]/95 backdrop-blur-[20px] px-6 py-4 md:hidden shadow-lg pointer-events-auto">
+        <div className="border-t border-[#d8ccb8]/30 bg-[#f5f0e8]/95 px-6 py-4 shadow-lg backdrop-blur-[20px] md:hidden">
           <ul className="flex flex-col gap-3">
             {links.map((link) => {
               if (link.id === "home" && !showHomeLink) return null;
-              
-              const isActive = isHomePage && activeSection === link.id;
-              
+
+              const isActive =
+                isHomePage && activeSection === link.id;
+
               return (
                 <li key={link.id}>
                   <Link
                     href={link.href}
-                    className={`block py-2 transition-colors ${
-                      isActive 
-                        ? "font-bold text-[#1f2a20] border-l-2 border-[#1f2a20] pl-3" 
-                        : "text-[#1f2a20] font-medium pl-3 hover:font-bold"
+                    className={`block py-2 pl-3 transition-colors ${
+                      isActive
+                        ? "border-l-2 border-[#007848] font-bold text-[#007848]"
+                        : "font-medium text-[#1f2a20] hover:font-bold"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
@@ -172,13 +198,14 @@ export default function Navbar() {
                 </li>
               );
             })}
-            <li className="mt-4 mb-2">
+
+            <li className="mb-2 mt-4">
               <Link
-                href="/#contact"
-                className="inline-flex w-full justify-center rounded-full border border-[#1f2a20] px-5 py-3 text-sm font-semibold text-[#1f2a20] hover:bg-[#1f2a20] hover:text-[#f5f0e8] transition-all shadow-sm"
+                href="/treehouse/#reserve"
+                className="inline-flex w-full justify-center rounded-full border border-[#007848] bg-[#007848] px-5 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#005f39]"
                 onClick={() => setIsOpen(false)}
               >
-                Reserve a table
+                Reserve a Stay
               </Link>
             </li>
           </ul>
