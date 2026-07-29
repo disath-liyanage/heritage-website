@@ -3,14 +3,16 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
-import { GalleryPhoto, GalleryCategory } from "@/lib/types/gallery";
 
-const CATEGORIES: { value: GalleryCategory; label: string }[] = [
-  { value: "outdoor", label: "Outdoor" },
-  { value: "treehouse", label: "Tree House" },
-  { value: "food", label: "Food" },
-  { value: "menu", label: "Menu" },
-];
+export type GalleryPhoto = {
+  id: string;
+  image_url: string;
+  storage_path: string;
+  category: string;
+  created_at: string;
+};
+
+const PRESET_CATEGORIES = ["Cuisine", "Riverside", "Treehouse", "Moments"];
 
 export default function AdminGalleryPage() {
   const supabase = createClient();
@@ -22,7 +24,8 @@ export default function AdminGalleryPage() {
   
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [category, setCategory] = useState<GalleryCategory | null>(null);
+  
+  const [category, setCategory] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
@@ -76,18 +79,21 @@ export default function AdminGalleryPage() {
     setFile(null);
     if (preview) URL.revokeObjectURL(preview);
     setPreview(null);
-    setCategory(null);
+    setCategory("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleUpload = async () => {
-    if (!file || !category) return;
+    const finalCategory = category.trim();
+    if (!file || !finalCategory) return;
 
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-      const filePath = `${category}/${fileName}`;
+      
+      const safeFolderName = finalCategory.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+      const filePath = `${safeFolderName}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from("gallery")
@@ -104,7 +110,7 @@ export default function AdminGalleryPage() {
         .insert({
           image_url: publicUrlData.publicUrl,
           storage_path: filePath,
-          category: category,
+          category: finalCategory,
         });
 
       if (dbError) throw new Error(`Database Error: ${dbError.message}`);
@@ -199,33 +205,45 @@ export default function AdminGalleryPage() {
               </div>
 
               <div className="flex flex-1 flex-col">
-                <label className="mb-3 block text-sm font-semibold text-[#1F2D21]">Select a Tag</label>
-                <div className="flex flex-wrap gap-3">
-                  {CATEGORIES.map((cat) => (
+                <label className="mb-3 block text-sm font-semibold text-[#1F2D21]">Select or Create a Tag</label>
+                
+                <div className="mb-4 flex flex-wrap gap-3">
+                  {PRESET_CATEGORIES.map((cat) => (
                     <button
-                      key={cat.value}
-                      onClick={() => setCategory(cat.value)}
-                      className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${
-                        category === cat.value
+                      key={cat}
+                      onClick={() => setCategory(cat)}
+                      className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition ${
+                        category.toLowerCase() === cat.toLowerCase()
                           ? "border-[#2D3F2B] bg-[#2D3F2B] text-[#F5F0E8] shadow-md"
                           : "border-[#CBBDA7] bg-[#FFF9F0] text-[#2D3F2B] hover:border-[#2D3F2B]"
                       }`}
                     >
-                      {cat.label}
+                      {cat}
                     </button>
                   ))}
                 </div>
 
-                <div className="mt-auto pt-8">
+                <div className="mb-6 flex flex-col gap-2">
+                  <label className="text-xs font-semibold text-[#6A5A43]">Or type a custom tag:</label>
+                  <input 
+                    type="text" 
+                    value={category} 
+                    onChange={(e) => setCategory(e.target.value)} 
+                    placeholder="e.g. Events, Specials..."
+                    className="w-full rounded-lg border border-[#CBBDA7] bg-white px-4 py-2.5 text-[#1F2D21] focus:border-[#2D3F2B] focus:outline-none focus:ring-1 focus:ring-[#2D3F2B]"
+                  />
+                </div>
+
+                <div className="mt-auto">
                   <button
                     onClick={handleUpload}
-                    disabled={!category || uploading}
+                    disabled={!category.trim() || uploading}
                     className="w-full rounded-lg bg-[#2D3F2B] px-6 py-3 font-semibold text-white transition hover:bg-[#1F2D21] disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
                   >
                     {uploading ? "Uploading to Gallery..." : "Upload Photo"}
                   </button>
-                  {!category && (
-                    <p className="mt-2 text-sm text-amber-600">Please select a tag to continue.</p>
+                  {!category.trim() && (
+                    <p className="mt-2 text-sm text-amber-600">Please provide a tag to continue.</p>
                   )}
                 </div>
               </div>
