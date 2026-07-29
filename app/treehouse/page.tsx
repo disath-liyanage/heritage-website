@@ -99,7 +99,7 @@ export default function TreeHousePage() {
         </div>
       </section>
 
-      <section className="bg-[#1C2B1E] py-20 text-center text-[#F5F0E8] px-6 my-8" id="reserve">
+      <section className="bg-[#034128] py-20 text-center text-[#F5F0E8] px-6 my-8" id="reserve">
         <h2 className="text-4xl font-display mb-4">See What's Cooking</h2>
         <p className="max-w-2xl mx-auto mb-10 text-[#A1B09F] text-lg">
           A view this good deserves food to match. Before you lock in your reservation, check out our menu packed with authentic, mouth-watering dishes.
@@ -125,7 +125,7 @@ export default function TreeHousePage() {
       </section>
 
       <section className="mx-auto max-w-4xl px-6 pt-16 pb-0 text-center">
-        <h2 className="text-2xl font-display text-[#1F2D21] mb-8">Reserve Your Stay</h2>
+        <h2 className="text-4xl font-display text-[#1F2D21] mb-8">Reserve Your Stay</h2>
         
         <div className="flex flex-wrap justify-center gap-4 mb-10">
           
