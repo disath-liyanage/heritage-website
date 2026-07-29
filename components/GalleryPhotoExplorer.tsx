@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PhotoLightbox from "@/components/PhotoLightbox";
 import { GalleryPhoto } from "@/lib/types/gallery";
+import { X } from "lucide-react";
 
 type GalleryPhotoExplorerProps = {
   photos: GalleryPhoto[];
@@ -145,7 +146,14 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
           </button>
         ))}
         {activeFilter !== "all" && (
-          <button type="button" onClick={() => setFilter("all")} className="inline-flex items-center gap-2 rounded-full border border-[#CBBDA7] bg-[#FFF9F0] px-5 py-2 text-sm font-semibold text-[#2D3F2B] transition hover:border-[#2D3F2B]">Clear</button>
+          <button
+            type="button"
+            onClick={() => setFilter("all")}
+            className="inline-flex items-center gap-2 rounded-full border border-[#2D3F2B] bg-[#2D3F2B] px-5 py-2 text-sm font-semibold text-[#F5F0E8] transition hover:bg-[#F5F0E8] hover:text-[#2D3F2B]"
+          >
+            <X className="h-4 w-4" strokeWidth={2.5} />
+            Clear
+          </button>
         )}
       </div>
 
