@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import "./globals.css";
 import { cormorant } from "./fonts";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 const siteUrl = "https://www.heritagefamilyrest.com";
 
@@ -153,6 +154,7 @@ export default function RootLayout({
         />
         {children}
         <Analytics />
+        <FloatingWhatsApp />
       </body>
     </html>
   );
