@@ -5,7 +5,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PhotoLightbox from "@/components/PhotoLightbox";
 import { GalleryPhoto } from "@/lib/types/gallery";
-import { X } from "lucide-react";
 
 type GalleryPhotoExplorerProps = {
   photos: GalleryPhoto[];
@@ -131,30 +130,32 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
   return (
     <>
       <div className="mx-auto mb-8 flex max-w-7xl flex-wrap gap-3 px-6">
+        <button
+          type="button"
+          onClick={() => setFilter("all")}
+          className={`rounded-full border px-5 py-2 text-sm font-bold capitalize transition-all ${
+            activeFilter === "all"
+              ? "border-[#007848] bg-[#E6F0EB]/90 text-[#007848] shadow-sm"
+              : "border-[#CBBDA7] bg-transparent text-[#1F2D21] hover:border-[#007848] hover:bg-[#E6F0EB]/30 hover:text-[#007848]"
+          }`}
+        >
+          All Photos
+        </button>
+
         {uniqueCategories.map((category) => (
           <button
             key={category}
             type="button"
             onClick={() => setFilter(category)}
-            className={`rounded-full border px-5 py-2 text-sm font-semibold capitalize transition ${
+            className={`rounded-full border px-5 py-2 text-sm font-bold capitalize transition-all ${
               activeFilter === category
-                ? "border-[#2D3F2B] bg-[#2D3F2B] text-[#F5F0E8]"
-                : "border-[#CBBDA7] bg-[#FFF9F0] text-[#2D3F2B] hover:border-[#2D3F2B]"
+                ? "border-[#007848] bg-[#E6F0EB]/90 text-[#007848] shadow-sm"
+                : "border-[#CBBDA7] bg-transparent text-[#1F2D21] hover:border-[#007848] hover:bg-[#E6F0EB]/30 hover:text-[#007848]"
             }`}
           >
             {category.replace(/-/g, " ")}
           </button>
         ))}
-        {activeFilter !== "all" && (
-          <button
-            type="button"
-            onClick={() => setFilter("all")}
-            className="inline-flex items-center gap-2 rounded-full border border-[#2D3F2B] bg-[#2D3F2B] px-5 py-2 text-sm font-semibold text-[#F5F0E8] transition hover:bg-[#F5F0E8] hover:text-[#2D3F2B]"
-          >
-            <X className="h-4 w-4" strokeWidth={2.5} />
-            Clear
-          </button>
-        )}
       </div>
 
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-6 pb-20 sm:grid-cols-2 lg:grid-cols-3">

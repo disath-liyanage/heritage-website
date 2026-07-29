@@ -39,7 +39,7 @@ export default function PhotoLightbox({
       onClick={onBack}
       aria-label="Close lightbox backdrop"
     >
-      <div className="absolute left-4 top-4 z-10" onClick={(event) => event.stopPropagation()}>
+      <div className="absolute right-4 top-4 z-10 md:right-8 md:top-6" onClick={(event) => event.stopPropagation()}>
         <button
           type="button"
           onClick={onBack}
