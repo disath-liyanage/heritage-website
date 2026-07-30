@@ -29,7 +29,7 @@ export default async function GalleryPage() {
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
       <Navbar />
 
-      <section className="mx-auto max-w-7xl px-6 pb-6 pt-36">
+      <section className="mx-auto max-w-7xl px-6 pb-6 pt-24 md:pt-28">
         <h1 className="mt-3 font-display text-5xl text-[#1F2D21] md:text-6xl">Gallery</h1>
         <p className="mt-4 max-w-3xl text-sm text-[#2A3A2D]/85 md:text-base">
           Moments from our riverside restaurant, tree house, and family dining spaces.
