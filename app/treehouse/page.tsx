@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import getDiscoveredImages from "@/lib/getImageFiles";
 import { FaAirbnb, FaTripadvisor } from "react-icons/fa";
 import { SiBookingdotcom } from "react-icons/si";
+
+import AnimatedMenuButton from "@/components/AnimatedMenuButton";
 
 export const metadata: Metadata = {
   title: "The Magical Tree House | Treetop Dining by the Kelani River - Heritage Family Restaurant",
@@ -27,7 +28,7 @@ export default function TreeHousePage() {
     <main className="min-h-screen bg-[#F5F0E8] text-[#1F2A20]">
       <Navbar />
       
-      <section className="mx-auto max-w-7xl px-6 pb-12 pt-36 text-center" id="treepage">
+      <section className="mx-auto max-w-7xl px-6 pb-12 pt-24 md:pt-28 text-center" id="treepage">
         <h1 className="mt-4 font-display text-5xl text-[#1F2D21] md:text-6xl max-w-4xl mx-auto">
           The Magical Tree House
         </h1>
@@ -105,23 +106,8 @@ export default function TreeHousePage() {
           A view this good deserves food to match. Before you lock in your reservation, check out our menu packed with authentic, mouth-watering dishes.
         </p>
         
-        <Link 
-          href="/menu"
-          className="group relative inline-block h-14 w-[260px] cursor-pointer rounded-full border border-[#F5F0E8] p-1 outline-none"
-        >
-          <span 
-            className="absolute inset-y-1 left-1 block w-11 rounded-full bg-[#F5F0E8] transition-all duration-500 group-hover:w-[calc(100%-8px)]" 
-            aria-hidden="true" 
-          />
-          <div className="absolute top-1/2 left-3.5 -translate-y-1/2 transition-transform duration-500 group-hover:translate-x-1 z-10">
-            <svg className="h-6 w-6 text-[#1C2B1E]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-            </svg>
-          </div>
-          <span className="absolute top-1/2 left-1/2 ml-4 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-lg font-medium tracking-tight text-[#F5F0E8] transition-colors duration-500 group-hover:text-[#1C2B1E] z-10">
-            Explore the Menu
-          </span>
-        </Link>
+        <AnimatedMenuButton />
+        
       </section>
 
       <section className="mx-auto max-w-4xl px-6 pt-16 pb-0 text-center">
