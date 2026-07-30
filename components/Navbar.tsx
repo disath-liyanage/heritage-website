@@ -128,7 +128,7 @@ export default function Navbar() {
             href="/treehouse/#reserve"
             className={`rounded-full border px-5 py-2 text-sm transition-all shadow-sm ${
               showBackground
-                ? "border-[#007848] bg-[#E6F0EB]/80 backdrop-blur-md font-bold text-[#007848] hover:bg-[#E6F0EB] hover:shadow-md"
+                ? "border-[#007848] bg-[#007848]/90 backdrop-blur-md font-bold text-[#feffff] hover:bg-[#007848] hover:shadow-md"
                 : "border-white bg-transparent font-semibold text-white hover:bg-white hover:text-[#007848]"
             }`}
           >
@@ -202,7 +202,7 @@ export default function Navbar() {
             <li className="mb-2 mt-4">
               <Link
                 href="/treehouse/#reserve"
-                className="inline-flex w-full justify-center rounded-full border border-[#007848] bg-[#E6F0EB]/80 backdrop-blur-md px-5 py-3 text-sm font-bold text-[#007848] shadow-sm transition-all hover:bg-[#E6F0EB] hover:shadow-md"
+                className="inline-flex w-full justify-center rounded-full border border-[#007848] bg-[#007848]/80 backdrop-blur-md px-5 py-3 text-sm font-bold text-[#ffffff] shadow-sm transition-all hover:bg-[#E6F0EB] hover:shadow-md"
                 onClick={() => setIsOpen(false)}
               >
                 Reserve a Stay
