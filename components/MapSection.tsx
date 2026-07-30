@@ -3,6 +3,7 @@
 import { FaAirbnb, FaTripadvisor } from "react-icons/fa";
 import { SiBookingdotcom } from "react-icons/si";
 import { APIProvider, Map, AdvancedMarker, InfoWindow, useMap } from '@vis.gl/react-google-maps';
+import { LocateFixed } from "lucide-react";
 
 const center = { lat: 6.9271, lng: 80.3849 };
 
@@ -20,10 +21,7 @@ function RecenterButton() {
       className="absolute bottom-6 right-6 bg-white p-3 rounded-full shadow-md z-10 hover:bg-gray-100 transition-colors border border-gray-200"
       aria-label="Recenter map"
     >
-      <svg className="w-6 h-6 text-[#1C2B1E]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8A4 4 0 1 0 12 16A4 4 0 1 0 12 8z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v2m0 16v2m10-10h-2M4 12H2" />
-      </svg>
+      <LocateFixed className="w-6 h-6 text-[#1C2B1E]" />
     </button>
   );
 }
