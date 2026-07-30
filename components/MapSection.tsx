@@ -2,9 +2,31 @@
 
 import { FaAirbnb, FaTripadvisor } from "react-icons/fa";
 import { SiBookingdotcom } from "react-icons/si";
-import { APIProvider, Map, AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps';
+import { APIProvider, Map, AdvancedMarker, InfoWindow, useMap } from '@vis.gl/react-google-maps';
 
 const center = { lat: 6.9271, lng: 80.3849 };
+
+function RecenterButton() {
+  const map = useMap();
+  
+  return (
+    <button
+      onClick={() => {
+        if (map) {
+          map.panTo(center);
+          map.setZoom(14);
+        }
+      }}
+      className="absolute bottom-6 right-6 bg-white p-3 rounded-full shadow-md z-10 hover:bg-gray-100 transition-colors border border-gray-200"
+      aria-label="Recenter map"
+    >
+      <svg className="w-6 h-6 text-[#1C2B1E]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8A4 4 0 1 0 12 16A4 4 0 1 0 12 8z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v2m0 16v2m10-10h-2M4 12H2" />
+      </svg>
+    </button>
+  );
+}
 
 export default function MapSection() {
   const mapsApiKey = (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "").trim();
@@ -21,14 +43,14 @@ export default function MapSection() {
               contact administrator
             </div>
           ) : (
-            <div className="w-full h-[450px]">
+            <div className="relative w-full h-[450px]">
               <APIProvider apiKey={mapsApiKey}>
                 <Map 
                   defaultCenter={center} 
                   defaultZoom={14} 
                   mapId={mapId}
                   gestureHandling="greedy"
-                  disableDefaultUI={false}
+                  disableDefaultUI={true}
                 >
                   <AdvancedMarker position={center} />
                   
@@ -37,8 +59,13 @@ export default function MapSection() {
                     pixelOffset={[0, -35]}
                     headerDisabled={true}
                   >
-                    <div className="flex flex-col gap-1 p-1 text-[#1C2B1E] min-w-[200px]">
-                      <span className="text-sm font-bold">
+                    <a 
+                      href="https://maps.app.goo.gl/XyKPGNf9t7nHyNrf6" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="group flex flex-col gap-1 p-2 text-[#1C2B1E] min-w-[200px] outline-none"
+                    >
+                      <span className="text-sm font-bold group-hover:text-blue-600 transition-colors">
                         Heritage Family Restaurant
                       </span>
                       <span className="text-xs font-normal text-[#5A674F]">
@@ -47,17 +74,14 @@ export default function MapSection() {
                       <span className="text-xs font-normal text-[#5A674F]">
                         Sri Lanka 71724
                       </span>
-                      <a 
-                        href="https://maps.app.goo.gl/XyKPGNf9t7nHyNrf6" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="mt-1 text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline inline-block w-max"
-                      >
+                      <span className="mt-1 text-xs font-medium text-blue-600 group-hover:text-blue-800 group-hover:underline inline-block w-max">
                         View on Google Maps
-                      </a>
-                    </div>
+                      </span>
+                    </a>
                   </InfoWindow>
                 </Map>
+                
+                <RecenterButton />
               </APIProvider>
             </div>
           )}
