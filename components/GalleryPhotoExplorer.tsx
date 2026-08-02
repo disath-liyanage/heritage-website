@@ -10,19 +10,18 @@ type GalleryPhotoExplorerProps = {
   photos: GalleryPhoto[];
 };
 
-function getGalleryImageAlt(category: string) {
-  switch (category?.toLowerCase()) {
-    case "treehouse":
-      return "The Magical Tree House by Heritage Family Restaurant, Yatiyanthota";
-    case "outdoor":
-      return "Kelani River view at Heritage Family Restaurant, Yatiyanthota";
-    case "food":
-    case "menu":
-    case "cuisine":
-      return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
-    default:
-      return "Heritage Family Restaurant riverside view, Yatiyanthota";
+function getGalleryImageAlt(categoryString: string) {
+  const lowerCat = categoryString?.toLowerCase() || "";
+  if (lowerCat.includes("treehouse")) {
+    return "The Magical Tree House by Heritage Family Restaurant, Yatiyanthota";
   }
+  if (lowerCat.includes("outdoor")) {
+    return "Kelani River view at Heritage Family Restaurant, Yatiyanthota";
+  }
+  if (lowerCat.includes("food") || lowerCat.includes("menu") || lowerCat.includes("cuisine")) {
+    return "Sri Lankan cuisine at Heritage Family Restaurant, Yatiyanthota";
+  }
+  return "Heritage Family Restaurant riverside view, Yatiyanthota";
 }
 
 export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerProps) {
@@ -33,8 +32,10 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
   const [sessionOrderedPhotos, setSessionOrderedPhotos] = useState<GalleryPhoto[]>(photos);
 
   const uniqueCategories = useMemo(() => {
-    const categories = new Set(photos.map((p) => p.category).filter(Boolean));
-    return Array.from(categories).sort();
+    const tags = photos.flatMap((p) =>
+      (p.category || "").split(",").map((cat) => cat.trim()).filter(Boolean)
+    );
+    return Array.from(new Set(tags)).sort();
   }, [photos]);
 
   useEffect(() => {
@@ -81,7 +82,10 @@ export default function GalleryPhotoExplorer({ photos }: GalleryPhotoExplorerPro
     if (activeFilter === "all") {
       return sessionOrderedPhotos;
     }
-    return sessionOrderedPhotos.filter((p) => p.category === activeFilter);
+    return sessionOrderedPhotos.filter((p) => {
+      const tags = (p.category || "").split(",").map((c) => c.trim());
+      return tags.includes(activeFilter);
+    });
   }, [activeFilter, sessionOrderedPhotos]);
 
   const selectedPhotoId = searchParams.get("photo");

@@ -14,6 +14,11 @@ export type GalleryPhoto = {
 
 const PRESET_CATEGORIES = ["Cuisine", "Riverside", "Treehouse", "Moments"];
 
+type SelectedFile = {
+  file: File;
+  preview: string;
+};
+
 export default function AdminGalleryPage() {
   const supabase = createClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -22,17 +27,17 @@ export default function AdminGalleryPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [category, setCategory] = useState<string>("");
+  const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [customTag, setCustomTag] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetchPhotos();
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      selectedFiles.forEach((f) => URL.revokeObjectURL(f.preview));
     };
-  }, [preview]);
+  }, []);
 
   const fetchPhotos = async () => {
     setLoading(true);
@@ -47,13 +52,19 @@ export default function AdminGalleryPage() {
     setLoading(false);
   };
 
-  const handleFileSelect = (selectedFile: File) => {
-    if (!selectedFile.type.startsWith("image/")) {
-      alert("Please select an image file.");
+  const handleFileSelect = (files: FileList | File[]) => {
+    const validFiles = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (validFiles.length === 0) {
+      alert("Please select valid image files.");
       return;
     }
-    setFile(selectedFile);
-    setPreview(URL.createObjectURL(selectedFile));
+    
+    const newSelections = validFiles.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    
+    setSelectedFiles((prev) => [...prev, ...newSelections]);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -70,54 +81,85 @@ export default function AdminGalleryPage() {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileSelect(e.dataTransfer.files[0]);
+      handleFileSelect(e.dataTransfer.files);
     }
   };
 
+  const removeFile = (indexToRemove: number) => {
+    setSelectedFiles((prev) => {
+      const updated = [...prev];
+      URL.revokeObjectURL(updated[indexToRemove].preview);
+      updated.splice(indexToRemove, 1);
+      return updated;
+    });
+  };
+
   const clearSelection = () => {
-    setFile(null);
-    if (preview) URL.revokeObjectURL(preview);
-    setPreview(null);
-    setCategory("");
+    selectedFiles.forEach((f) => URL.revokeObjectURL(f.preview));
+    setSelectedFiles([]);
+    setTags([]);
+    setCustomTag("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const toggleTag = (tag: string) => {
+    setTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const handleAddCustomTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const tag = customTag.trim();
+      if (tag && !tags.includes(tag)) {
+        setTags((prev) => [...prev, tag]);
+      }
+      setCustomTag("");
+    }
+  };
+
   const handleUpload = async () => {
-    const finalCategory = category.trim();
-    if (!file || !finalCategory) return;
+    if (selectedFiles.length === 0 || tags.length === 0) return;
 
     setUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      const finalCategoryString = tags.join(", ");
       
-      const safeFolderName = finalCategory.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-      const filePath = `${safeFolderName}/${fileName}`;
+      const uploadPromises = selectedFiles.map(async ({ file }) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+        
+        const safeFolderName = tags[0].replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+        const filePath = `${safeFolderName}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("gallery")
-        .upload(filePath, file);
+        const { error: uploadError } = await supabase.storage
+          .from("gallery")
+          .upload(filePath, file);
 
-      if (uploadError) throw new Error(`Storage Error: ${uploadError.message}`);
+        if (uploadError) throw new Error(`Storage Error: ${uploadError.message}`);
 
-      const { data: publicUrlData } = supabase.storage
-        .from("gallery")
-        .getPublicUrl(filePath);
+        const { data: publicUrlData } = supabase.storage
+          .from("gallery")
+          .getPublicUrl(filePath);
 
-      const { error: dbError } = await supabase
-        .from("gallery_photos")
-        .insert({
-          image_url: publicUrlData.publicUrl,
-          storage_path: filePath,
-          category: finalCategory,
-        });
+        const { error: dbError } = await supabase
+          .from("gallery_photos")
+          .insert({
+            image_url: publicUrlData.publicUrl,
+            storage_path: filePath,
+            category: finalCategoryString,
+          });
 
-      if (dbError) throw new Error(`Database Error: ${dbError.message}`);
+        if (dbError) throw new Error(`Database Error: ${dbError.message}`);
+      });
+
+      await Promise.all(uploadPromises);
 
       clearSelection();
       fetchPhotos();
     } catch (error: any) {
-      alert(`Failed to upload photo: ${error?.message || String(error)}`);
+      alert(`Failed to upload photos: ${error?.message || String(error)}`);
     } finally {
       setUploading(false);
     }
@@ -149,14 +191,21 @@ export default function AdminGalleryPage() {
   return (
     <div className="w-full">
       <header className="mb-10">
-        <p className="text-xs uppercase tracking-[0.25em] text-[#6A5A43] mb-2">Manage</p>
+        <p className="mb-2 text-xs uppercase tracking-[0.25em] text-[#6A5A43]">Manage</p>
         <h1 className="font-display text-4xl text-[#1F2D21]">Gallery</h1>
       </header>
 
       <section className="mb-16 rounded-2xl border border-[#E5DFD3] bg-white p-6 shadow-sm">
-        <h2 className="mb-6 text-xl font-semibold text-[#1F2D21]">Add New Photo</h2>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-[#1F2D21]">Add New Photos</h2>
+          {selectedFiles.length > 0 && (
+            <button onClick={clearSelection} className="text-sm font-semibold text-red-600 hover:underline">
+              Clear All
+            </button>
+          )}
+        </div>
         
-        {!preview ? (
+        {selectedFiles.length === 0 ? (
           <div
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -171,13 +220,14 @@ export default function AdminGalleryPage() {
             <svg className="mb-4 h-10 w-10 text-[#6A5A43] transition-transform group-hover:scale-110 group-hover:text-[#007848]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
-            <p className="text-center font-medium text-[#2A3A2D]">Click to upload or drag and drop</p>
+            <p className="text-center font-medium text-[#2A3A2D]">Click to upload or drag and drop multiple files</p>
             <p className="mt-1 text-xs text-[#6A5A43]">PNG, JPG, WEBP, or AVIF</p>
             <input
               type="file"
+              multiple
               ref={fileInputRef}
               onChange={(e) => {
-                if (e.target.files?.[0]) handleFileSelect(e.target.files[0]);
+                if (e.target.files) handleFileSelect(e.target.files);
               }}
               accept="image/png, image/jpeg, image/webp, image/avif"
               className="hidden"
@@ -185,29 +235,56 @@ export default function AdminGalleryPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-8 md:flex-row md:items-start">
-            <div className="relative aspect-4/3 w-full shrink-0 max-w-sm overflow-hidden rounded-xl border border-[#E5DFD3] bg-gray-100">
-              <Image src={preview} alt="Upload preview" fill className="object-cover" />
-              <button
-                onClick={clearSelection}
-                className="absolute right-3 top-3 rounded-full bg-black/60 p-2 text-white backdrop-blur-md transition hover:bg-red-600"
-                title="Remove image"
-              >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+            
+            <div className="w-full shrink-0 max-w-lg">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {selectedFiles.map((fileObj, index) => (
+                  <div key={index} className="relative aspect-square overflow-hidden rounded-lg border border-[#E5DFD3] bg-gray-100">
+                    <Image src={fileObj.preview} alt={`Upload preview ${index}`} fill className="object-cover" />
+                    <button
+                      onClick={() => removeFile(index)}
+                      className="absolute right-1.5 top-1.5 rounded-full bg-black/60 p-1.5 text-white backdrop-blur-md transition hover:bg-red-600"
+                      title="Remove image"
+                    >
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+                
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#CBBDA7] bg-[#FAFAF8] transition hover:border-[#007848] hover:bg-[#E6F0EB]/30"
+                >
+                  <svg className="h-6 w-6 text-[#6A5A43]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span className="mt-2 text-xs font-medium text-[#6A5A43]">Add More</span>
+                  <input
+                    type="file"
+                    multiple
+                    ref={fileInputRef}
+                    onChange={(e) => {
+                      if (e.target.files) handleFileSelect(e.target.files);
+                    }}
+                    accept="image/png, image/jpeg, image/webp, image/avif"
+                    className="hidden"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-1 flex-col h-full">
-              <label className="mb-3 block text-sm font-semibold text-[#1F2D21]">Select or Create a Tag</label>
+              <label className="mb-3 block text-sm font-semibold text-[#1F2D21]">Select Tags</label>
               
-              <div className="mb-4 flex flex-wrap gap-3">
+              <div className="mb-4 flex flex-wrap gap-2">
                 {PRESET_CATEGORIES.map((cat) => (
                   <button
                     key={cat}
-                    onClick={() => setCategory(cat)}
-                    className={`rounded-full border px-5 py-2 text-sm font-bold transition-all shadow-sm ${
-                      category.toLowerCase() === cat.toLowerCase()
+                    onClick={() => toggleTag(cat)}
+                    className={`rounded-full border px-4 py-1.5 text-sm font-bold transition-all shadow-sm ${
+                      tags.includes(cat)
                         ? "border-[#007848] bg-[#007848] text-white"
                         : "border-[#007848] bg-[#E6F0EB]/80 text-[#007848] hover:bg-[#E6F0EB] hover:shadow-md"
                     }`}
@@ -218,26 +295,40 @@ export default function AdminGalleryPage() {
               </div>
 
               <div className="mb-6 flex flex-col gap-2">
-                <label className="text-xs font-semibold text-[#6A5A43]">Or type a custom tag:</label>
+                <label className="text-xs font-semibold text-[#6A5A43]">Add custom tags (press Enter):</label>
                 <input 
                   type="text" 
-                  value={category} 
-                  onChange={(e) => setCategory(e.target.value)} 
-                  placeholder="e.g. Events, Specials..."
+                  value={customTag} 
+                  onChange={(e) => setCustomTag(e.target.value)}
+                  onKeyDown={handleAddCustomTag}
+                  placeholder="Type tag and press Enter..."
                   className="w-full rounded-lg border border-[#CBBDA7] bg-white px-4 py-2.5 text-[#1F2D21] focus:border-[#007848] focus:outline-none focus:ring-1 focus:ring-[#007848]"
                 />
+                
+                {tags.filter(t => !PRESET_CATEGORIES.includes(t)).length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {tags.filter(t => !PRESET_CATEGORIES.includes(t)).map(tag => (
+                      <span key={tag} className="flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-700">
+                        {tag}
+                        <button onClick={() => toggleTag(tag)} className="text-gray-500 hover:text-red-500">
+                           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <div className="mt-auto w-full pt-4">
+              <div className="mt-auto w-full pt-4 border-t border-[#E5DFD3]">
                 <button
                   onClick={handleUpload}
-                  disabled={!category.trim() || uploading}
-                  className="w-full rounded-full bg-[#007848] px-6 py-2.5 font-bold text-white shadow-sm transition-all hover:bg-[#005C36] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={tags.length === 0 || uploading}
+                  className="w-full rounded-full bg-[#007848] px-6 py-3 font-bold text-white shadow-sm transition-all hover:bg-[#005C36] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {uploading ? "Uploading to Gallery..." : "Upload Photo"}
+                  {uploading ? `Uploading ${selectedFiles.length} Photo(s)...` : `Upload ${selectedFiles.length} Photo(s)`}
                 </button>
-                {!category.trim() && (
-                  <p className="mt-2 text-center text-sm text-amber-600">Please provide a tag to continue.</p>
+                {tags.length === 0 && (
+                  <p className="mt-2 text-center text-sm font-medium text-amber-600">Select at least one tag to continue.</p>
                 )}
               </div>
             </div>
@@ -276,10 +367,12 @@ export default function AdminGalleryPage() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 
-                <div className="absolute left-3 top-3 z-10">
-                  <span className="rounded-full border border-[#007848] bg-[#E6F0EB]/95 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#007848] shadow-sm backdrop-blur-sm">
-                    {photo.category}
-                  </span>
+                <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-1 max-w-[80%]">
+                  {photo.category.split(',').map(cat => (
+                    <span key={cat.trim()} className="rounded-full border border-[#007848] bg-[#E6F0EB]/95 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#007848] shadow-sm backdrop-blur-sm">
+                      {cat.trim()}
+                    </span>
+                  ))}
                 </div>
 
                 <button
