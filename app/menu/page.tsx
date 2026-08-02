@@ -78,7 +78,7 @@ export default async function MenuPage() {
                     <h3 className="text-lg font-semibold text-[#223525]">{item.name}</h3>
                     {item.price != null && (
                       <p className="whitespace-nowrap text-sm font-semibold text-[#6A5A43]">
-                        {currency.format(item.price)}
+                        {currency.format(item.price)}+
                       </p>
                     )}
                   </div>
